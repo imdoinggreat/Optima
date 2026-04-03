@@ -315,10 +315,10 @@ export default function DashboardPage() {
                       <Badge
                         variant={
                           rec.program_type === "reach"
-                            ? "destructive"
+                            ? "default"
                             : rec.program_type === "target"
-                              ? "default"
-                              : "secondary"
+                            ? "outline"
+                            : "default"
                         }
                         className="capitalize"
                       >
