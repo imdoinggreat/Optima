@@ -1,7 +1,4 @@
-import json
 import os
-import re
-import time
 from typing import Generator
 
 from dotenv import load_dotenv, find_dotenv
@@ -10,23 +7,7 @@ from sqlalchemy.orm import sessionmaker, Session
 
 from app.models import Base
 
-# #region agent log
-_LOG_PATH = "/Users/ziruzhang/Desktop/wthimf/.cursor/debug-e40d20.log"
-
-def _dbg(msg: str, data: dict, hyp: str) -> None:
-    try:
-        entry = json.dumps({"sessionId": "e40d20", "timestamp": int(time.time() * 1000), "location": "database.py", "message": msg, "data": data, "hypothesisId": hyp})
-        with open(_LOG_PATH, "a") as _f:
-            _f.write(entry + "\n")
-    except Exception:
-        pass
-# #endregion
-
-# #region agent log
-_dotenv_path = find_dotenv(usecwd=True)
-_dotenv_loaded = load_dotenv(_dotenv_path, override=False)
-_dbg("dotenv load result", {"found_path": _dotenv_path, "loaded": _dotenv_loaded, "cwd": os.getcwd()}, "H-D")
-# #endregion
+load_dotenv(find_dotenv(usecwd=True), override=False)
 
 
 def _normalize_database_url(url: str) -> str:
@@ -39,29 +20,9 @@ def _normalize_database_url(url: str) -> str:
 
 
 def _get_database_url():
-    raw_db_url = os.getenv("DATABASE_URL")
-    raw_pg_dsn = os.getenv("POSTGRES_DSN")
-    url = raw_db_url or raw_pg_dsn
-
-    # #region agent log
-    username = re.search(r'://([^:@]+)', url).group(1) if url and re.search(r'://([^:@]+)', url) else None
-    host = re.search(r'@([^:/]+)', url).group(1) if url and re.search(r'@([^:/]+)', url) else None
-    masked = re.sub(r'://([^:]+):([^@]+)@', lambda m: '://' + m.group(1) + ':***@', url) if url else None
-    _dbg("env vars read", {
-        "DATABASE_URL_set": raw_db_url is not None,
-        "POSTGRES_DSN_set": raw_pg_dsn is not None,
-        "using_url_masked": masked,
-        "username": username,
-        "host": host,
-    }, "H-A H-D H-E")
-    # #endregion
-
+    url = os.getenv("DATABASE_URL") or os.getenv("POSTGRES_DSN")
     if url:
         return _normalize_database_url(url)
-
-    # #region agent log
-    _dbg("falling back to SQLite (no DATABASE_URL set)", {"runId": "post-fix"}, "H-B")
-    # #endregion
     print("[database] DATABASE_URL not set — using local SQLite: optima.dev.sqlite3")
     return "sqlite+pysqlite:///./optima.dev.sqlite3"
 
@@ -109,17 +70,10 @@ def init_db() -> None:
     """创建所有表，连接失败时仅打印警告，不阻断启动。"""
     try:
         Base.metadata.create_all(bind=engine)
-        # 对已存在的 users 表补充新字段（兼容旧库）
         with engine.begin() as conn:
             _add_column_if_missing(conn, "users", "undergraduate_school_tier", "VARCHAR(20)")
             _add_column_if_missing(conn, "users", "skill_self_assessment", "JSON")
-        # #region agent log
-        _dbg("init_db success", {"runId": "post-fix"}, "H-B H-C")
-        # #endregion
     except Exception as exc:
-        # #region agent log
-        _dbg("init_db failed", {"runId": "post-fix", "error_type": type(exc).__name__, "error": str(exc)[:300]}, "H-B H-C")
-        # #endregion
         print(f"[database] WARNING: could not run create_all — {exc}")
 
 
@@ -127,10 +81,5 @@ def get_db() -> Generator[Session, None, None]:
     db = SessionLocal()
     try:
         yield db
-    except Exception as exc:
-        # #region agent log
-        _dbg("get_db session error", {"error_type": type(exc).__name__, "error": str(exc)[:300]}, "H-B H-C")
-        # #endregion
-        raise
     finally:
         db.close()

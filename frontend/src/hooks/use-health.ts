@@ -17,14 +17,24 @@ export function useHealth() {
   const [data, setData] = useState<HealthData | null>(null)
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/health")
-      .then((r) => r.json())
+    const apiBase =
+      process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") || "http://localhost:8000"
+    const url = `${apiBase}/api/health`
+
+    fetch(url)
+      .then(async (r) => {
+        return await r.json()
+      })
       .then((d: HealthData) => {
         setData(d)
         setConnected(d.status === "healthy")
       })
-      .catch(() => {})
-      .finally(() => setLoading(false))
+      .catch(() => {
+        // Health check failed — backend offline
+      })
+      .finally(() => {
+        setLoading(false)
+      })
   }, [])
 
   return { connected, loading, data }

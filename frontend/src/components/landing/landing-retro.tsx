@@ -70,13 +70,13 @@ function RetroButton({ children, href, primary }: { children: React.ReactNode; h
 }
 
 const features = [
-  { title: "智能项目匹配", desc: "AI算法精准推荐", icon: Target },
-  { title: "先修课分析",   desc: "匹配度量化分析",  icon: BookOpen },
-  { title: "职业路径规划", desc: "就业去向可视化",  icon: TrendingUp },
-  { title: "申请进度追踪", desc: "全流程一站管理",  icon: Users },
+  { title: "多信号推断引擎", desc: "决策画像+原型匹配", icon: Target },
+  { title: "认知冲突检测",   desc: "发现偏好矛盾信号",  icon: BookOpen },
+  { title: "项目级精准匹配", desc: "593项目逐一评分",  icon: TrendingUp },
+  { title: "全学科13国覆盖", desc: "CS/人文/艺术/商科",  icon: Users },
 ]
 
-const MARQUEE_TEXT = "Optima ★ AI智能选校 ★ 文商科专属 ★ 北美硕士申请 ★ 精准匹配引擎 ★ 先修课分析 ★ 职业路径规划 ★ "
+const MARQUEE_TEXT = "Optima ★ AI智能选校 ★ 全学科覆盖 ★ 全球硕士申请 ★ 多信号推断引擎 ★ 认知冲突检测 ★ 593个项目匹配 ★ "
 
 export default function LandingRetro() {
   const { connected, loading, data } = useHealth()
@@ -111,14 +111,14 @@ export default function LandingRetro() {
             <span style={{ fontWeight: "bold", fontSize: 16, color: "#000080", fontFamily: '"Arial Black", Impact, sans-serif' }}>Optima</span>
             <span style={{ fontSize: 10, color: "#808080" }}>v1.0</span>
           </div>
-          <RetroButton href="/onboarding" primary>开始使用 ▶</RetroButton>
+          <RetroButton href="/assessment" primary>开始使用 ▶</RetroButton>
         </div>
       </div>
 
       <main style={{ maxWidth: 960, margin: "0 auto", padding: "16px" }}>
 
         {/* Hero Window */}
-        <Win95Card title="文商科硕士智能选校平台 — 主程序">
+        <Win95Card title="全球硕士智能选校平台 — 主程序">
           <div style={{ textAlign: "center", padding: "16px 8px" }}>
             <h1
               style={{
@@ -131,11 +131,11 @@ export default function LandingRetro() {
                 textShadow: "none",
               }}
             >
-              文商科硕士智能选校平台
+              全球硕士智能选校平台
             </h1>
 
             <p style={{ fontSize: 14, color: "#000", margin: "0 0 16px", maxWidth: 560, marginLeft: "auto", marginRight: "auto" }}>
-              专为文商科背景设计的 AI 选校系统，基于真实数据匹配最适合您的硕士项目
+              覆盖全学科的 AI 选校系统，基于真实数据匹配最适合您的硕士项目
             </p>
 
             {/* Status badge */}
@@ -151,13 +151,13 @@ export default function LandingRetro() {
             </div>
 
             <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap" }}>
-              <RetroButton href="/onboarding" primary>
+              <RetroButton href="/assessment" primary>
                 <GraduationCap style={{ width: 14, height: 14 }} />
                 ★ 开始硕士专属测评 ★
               </RetroButton>
-              <RetroButton href="/dashboard">
+              <RetroButton href="/assessment">
                 <Target style={{ width: 14, height: 14 }} />
-                查看项目匹配
+                了解测评内容
               </RetroButton>
             </div>
           </div>
@@ -189,7 +189,7 @@ export default function LandingRetro() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 12 }}>
             {[
               { label: "VISITORS:", value: "0012,345" },
-              { label: "PROGRAMS:", value: "000,500+" },
+              { label: "PROGRAMS:", value: "000,593" },
               { label: "STATUS:",   value: connected ? "ONLINE ✓" : "OFFLINE ✗" },
             ].map((stat) => (
               <div key={stat.label} style={{ textAlign: "center" }}>
@@ -207,9 +207,9 @@ export default function LandingRetro() {
         <Win95Card title="快速开始指南 — 3 步完成申请">
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 8 }}>
             {[
-              { n: "1", title: "完成硕士专属测评", desc: "完成大五人格精简版与选校偏好测评，生成初始权重" },
-              { n: "2", title: "完善硕士档案",     desc: "补充 GPA、先修课、经历与偏好，让推荐引擎更精准" },
-              { n: "3", title: "AI智能匹配决策",   desc: "查看项目详情、就业数据、费用分析，明智选择" },
+              { n: "1", title: "做测评（~45题）", desc: "完成6大模块测评，涵盖终极目标、背景快照、性格-环境匹配等" },
+              { n: "2", title: "AI分析决策画像",     desc: "多信号推断引擎构建你的原型画像，检测认知冲突与隐含偏好" },
+              { n: "3", title: "获得个性化选校推荐",   desc: "593个项目逐一匹配评分，每条推荐都有why和risk解释" },
             ].map((s) => (
               <div key={s.n} style={{ ...bevelOut, background: "#ffffcc", padding: "8px 10px" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
@@ -228,8 +228,8 @@ export default function LandingRetro() {
             <p style={{ fontFamily: '"Arial Black", Impact, sans-serif', fontSize: 18, margin: "0 0 10px", textTransform: "uppercase", color: "#000" }}>
               ★ 准备好开始了吗? ★
             </p>
-            <p style={{ fontSize: 12, margin: "0 0 12px", color: "#000" }}>立即创建您的硕士申请档案，获得专属 AI 推荐</p>
-            <RetroButton href="/onboarding" primary>
+            <p style={{ fontSize: 12, margin: "0 0 12px", color: "#000" }}>完成~45题测评，获得专属 AI 选校推荐</p>
+            <RetroButton href="/assessment" primary>
               ★ 开始硕士专属测评 ★
             </RetroButton>
           </div>
@@ -239,8 +239,8 @@ export default function LandingRetro() {
 
       {/* Footer */}
       <footer style={{ ...bevelIn, background: "#c0c0c0", borderRadius: 0, borderLeft: "none", borderRight: "none", borderBottom: "none", padding: "8px 16px", textAlign: "center" }}>
-        <p style={{ fontSize: 11, color: "#000", margin: 0 }}>© 2026 Optima — 文商科硕士智能选校平台 | 专为文商科背景优化</p>
-        <p style={{ fontSize: 10, color: "#808080", margin: "2px 0 0", fontFamily: '"Courier New", monospace' }}>数据基于 IPEDS/NCES 官方数据库</p>
+        <p style={{ fontSize: 11, color: "#000", margin: 0 }}>© 2026 Optima — 全球硕士智能选校平台 | 覆盖工、商、文、理、艺术全学科</p>
+        <p style={{ fontSize: 10, color: "#808080", margin: "2px 0 0", fontFamily: '"Courier New", monospace' }}>覆盖全球 13 国 593 个项目</p>
       </footer>
     </div>
   )

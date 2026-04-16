@@ -1,192 +1,695 @@
 "use client"
 
 import Link from "next/link"
-import { GraduationCap, ArrowRight, Target, BookOpen, TrendingUp, Users, CheckCircle2 } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import { useHealth } from "@/hooks/use-health"
+import { motion } from "framer-motion"
 
-const features = [
-  { icon: Target,    title: "智能项目匹配", desc: "基于AI算法，根据您的背景精准推荐硕士项目", accent: "#0052FF" },
-  { icon: BookOpen,  title: "先修课分析",   desc: "分析您与目标项目的先修课匹配度，避免申请坑点", accent: "#0052FF" },
-  { icon: TrendingUp, title: "职业路径规划", desc: "清晰展示项目就业去向，匹配您的职业目标", accent: "#4D7CFF" },
-  { icon: Users,     title: "申请进度追踪", desc: "一站式管理您的硕士申请全流程", accent: "#4D7CFF" },
+/* ─── Data ─── */
+
+const stats = [
+  { value: "593", label: "个项目" },
+  { value: "13", label: "个国家" },
+  { value: "45", label: "题精准测评" },
+  { value: "5", label: "种决策原型" },
 ]
 
 const steps = [
-  { n: "01", title: "完成硕士专属测评", desc: "完成大五人格精简版与选校偏好测评，生成初始策略权重" },
-  { n: "02", title: "完善硕士档案",     desc: "补充 GPA、先修课、经历与偏好，让推荐引擎更精准" },
-  { n: "03", title: "AI智能匹配决策",   desc: "查看项目详情、就业数据、费用分析，做出明智选择" },
+  { n: "01", title: "完成测评", desc: "回答约 45 道精心设计的测评题，涵盖终极目标、背景快照、性格-环境匹配、价值取舍等六大模块。" },
+  { n: "02", title: "AI 构建画像", desc: "多信号推断引擎分析你的回答，构建决策原型画像，检测认知冲突与隐含偏好。" },
+  { n: "03", title: "获得推荐", desc: "593 个项目逐一匹配评分，每条推荐都附带 why 与 risk 解释，帮你看清真实诉求。" },
 ]
 
+const features = [
+  {
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="#0A0A0A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="14" cy="14" r="11" />
+        <circle cx="14" cy="14" r="5" />
+        <circle cx="14" cy="14" r="1" fill="#0A0A0A" />
+      </svg>
+    ),
+    title: "多信号推断引擎",
+    desc: "基于约 45 题测评的多信号推断，构建你的决策画像与原型匹配。",
+  },
+  {
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="#0A0A0A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 20L12 4L16 14L24 8" />
+        <path d="M18 14L24 8V14" />
+      </svg>
+    ),
+    title: "认知冲突检测",
+    desc: "自动发现你偏好中的矛盾信号，帮你看清真实诉求。",
+  },
+  {
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="#0A0A0A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="3" width="22" height="22" rx="3" />
+        <path d="M3 10H25" />
+        <path d="M10 3V25" />
+      </svg>
+    ),
+    title: "项目级精准匹配",
+    desc: "593 个项目逐一评分，每条推荐都附带 why 与 risk 解释。",
+  },
+  {
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="#0A0A0A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="10" cy="10" r="5" />
+        <circle cx="18" cy="18" r="5" />
+        <path d="M14.5 6.5A7 7 0 0121.5 13.5" />
+      </svg>
+    ),
+    title: "全学科 13 国覆盖",
+    desc: "CS、人文、艺术、商科、社科等全学科，覆盖 13 个国家。",
+  },
+]
+
+/* ─── Noise texture (inline SVG data URI) ─── */
+const grainTexture = `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E")`
+
+/* ─── Animation variants ─── */
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, delay: i * 0.1, ease: [0.25, 0.46, 0.45, 0.94] },
+  }),
+}
+
+const slideUp = {
+  hidden: { opacity: 0, y: 40 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] },
+  },
+}
+
+/* ─── Colors ─── */
+const C = {
+  cream: "#FAF8F5",
+  ink: "#0A0A0A",
+  copper: "#B87333",
+  body: "#5A5A5A",
+  muted: "#9A9A9A",
+  cardBorder: "#E5E0D8",
+  white: "#FFFFFF",
+} as const
+
+/* ─── Typography helpers ─── */
+const cnDisplay = "var(--font-cn-display, var(--font-lxgw, serif))"
+const serif = "var(--font-dm-serif, Georgia, serif)"
+const sans = "var(--font-dm-sans, system-ui, sans-serif)"
+const mono = "var(--font-geist-mono, monospace)"
+
+/* ─── Component ─── */
 export default function LandingMinimal() {
   const { connected, loading, data } = useHealth()
 
   return (
-    <div style={{ background: "#FAFAFA", minHeight: "100vh", fontFamily: "var(--font-geist-sans, system-ui, sans-serif)" }}>
+    <div
+      style={{
+        background: C.cream,
+        minHeight: "100vh",
+        fontFamily: sans,
+        color: C.ink,
+        position: "relative",
+      }}
+    >
+      {/* Grain overlay */}
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          backgroundImage: grainTexture,
+          backgroundRepeat: "repeat",
+          backgroundSize: "256px 256px",
+          pointerEvents: "none",
+          zIndex: 100,
+          opacity: 0.5,
+        }}
+      />
 
-      {/* Nav */}
-      <nav style={{ background: "rgba(255,255,255,0.9)", backdropFilter: "blur(12px)", borderBottom: "1px solid #E2E8F0", position: "sticky", top: 0, zIndex: 50 }}>
-        <div style={{ maxWidth: 1152, margin: "0 auto", padding: "0 24px", height: 64, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div style={{ width: 36, height: 36, background: "linear-gradient(135deg, #0052FF, #4D7CFF)", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <GraduationCap style={{ color: "#fff", width: 20, height: 20 }} />
-            </div>
-            <span style={{ fontWeight: 700, fontSize: 18, color: "#0F172A", letterSpacing: "-0.01em" }}>Optima</span>
-            <span style={{ fontSize: 11, color: "#64748B", fontFamily: "var(--font-geist-mono, monospace)", letterSpacing: "0.1em", textTransform: "uppercase" }}>v1.0</span>
+      {/* ─── Nav ─── */}
+      <nav
+        style={{
+          borderBottom: `1px solid ${C.cardBorder}`,
+          background: C.cream,
+          position: "sticky",
+          top: 0,
+          zIndex: 50,
+        }}
+      >
+        <div
+          style={{
+            maxWidth: 1200,
+            margin: "0 auto",
+            padding: "0 32px",
+            height: 64,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <span
+              style={{
+                fontFamily: cnDisplay,
+                fontSize: 22,
+                fontWeight: 400,
+                color: C.ink,
+                letterSpacing: "-0.02em",
+              }}
+            >
+              Optima
+            </span>
+            {/* Backend status dot */}
+            {!loading && (
+              <span
+                title={connected ? `Backend v${data?.version ?? ""}` : "Backend offline"}
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: "50%",
+                  background: connected ? "#22c55e" : "#ef4444",
+                  display: "inline-block",
+                  marginLeft: 4,
+                  flexShrink: 0,
+                }}
+              />
+            )}
           </div>
-          <Link href="/onboarding" style={{ background: "linear-gradient(to right, #0052FF, #4D7CFF)", color: "#fff", padding: "8px 20px", borderRadius: 10, fontSize: 14, fontWeight: 600, textDecoration: "none", display: "flex", alignItems: "center", gap: 6, boxShadow: "0 2px 10px rgba(0,82,255,0.25)", transition: "all 0.2s" }}>
-            开始使用 <ArrowRight style={{ width: 14, height: 14 }} />
+          <Link
+            href="/assessment"
+            style={{
+              background: C.ink,
+              color: C.cream,
+              padding: "10px 22px",
+              borderRadius: 10,
+              fontSize: 14,
+              fontWeight: 500,
+              textDecoration: "none",
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              transition: "transform 0.2s, box-shadow 0.2s",
+              fontFamily: sans,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "scale(1.02)"
+              e.currentTarget.style.boxShadow = "0 4px 16px rgba(0,0,0,0.15)"
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1)"
+              e.currentTarget.style.boxShadow = "none"
+            }}
+          >
+            开始测评 <ArrowRight style={{ width: 14, height: 14 }} />
           </Link>
         </div>
       </nav>
 
-      {/* Hero */}
-      <section style={{ maxWidth: 1152, margin: "0 auto", padding: "96px 24px 80px" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: 64, alignItems: "center" }}>
-          <div>
-            {/* Section badge */}
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "rgba(0,82,255,0.06)", border: "1px solid rgba(0,82,255,0.2)", borderRadius: 999, padding: "6px 16px", marginBottom: 28 }}>
-              <span className="min-pulse" style={{ width: 7, height: 7, borderRadius: "50%", background: "#0052FF", display: "inline-block" }} />
-              <span style={{ fontFamily: "var(--font-geist-mono, monospace)", fontSize: 11, letterSpacing: "0.15em", textTransform: "uppercase", color: "#0052FF" }}>AI 驱动选校引擎</span>
-            </div>
+      {/* ─── Hero ─── */}
+      <section style={{ maxWidth: 1200, margin: "0 auto", padding: "120px 32px 100px" }}>
+        {/* Full-width editorial layout: centered, no grid split */}
+        <div style={{ maxWidth: 800 }}>
+          <motion.p
+            custom={0}
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            style={{
+              fontFamily: mono,
+              fontSize: 11,
+              color: C.copper,
+              margin: "0 0 32px",
+              letterSpacing: "0.2em",
+              textTransform: "uppercase",
+            }}
+          >
+            AI-Powered Program Matching
+          </motion.p>
 
-            <h1 className="font-calistoga" style={{ fontSize: "clamp(2.5rem, 5vw, 4.5rem)", lineHeight: 1.05, color: "#0F172A", margin: "0 0 24px", letterSpacing: "-0.02em" }}>
-              文商科硕士<br />
-              <span className="gradient-text">智能选校</span>平台
-            </h1>
-            <p style={{ fontSize: 18, color: "#64748B", lineHeight: 1.7, maxWidth: 520, margin: "0 0 36px" }}>
-              专为文商科背景设计的AI选校系统，基于真实数据匹配最适合您的硕士项目。
-            </p>
+          <motion.h1
+            custom={1}
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            style={{
+              fontFamily: cnDisplay,
+              fontSize: "clamp(2.8rem, 7vw, 5.5rem)",
+              lineHeight: 1.25,
+              color: C.ink,
+              margin: "0 0 40px",
+              letterSpacing: "0.06em",
+              fontWeight: 300,
+            }}
+          >
+            找到属于你的
+            <br />
+            <span style={{ position: "relative", display: "inline-block" }}>
+              <span style={{ color: C.copper, fontWeight: 400 }}>理想</span>
+              硕士项目
+              <motion.span
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ duration: 0.8, delay: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+                style={{
+                  position: "absolute",
+                  bottom: -4,
+                  left: 0,
+                  width: "100%",
+                  height: 1,
+                  background: C.cardBorder,
+                  transformOrigin: "left",
+                }}
+              />
+            </span>
+          </motion.h1>
 
-            {/* Status */}
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, marginBottom: 36, fontSize: 13 }}>
-              {!loading && (
-                connected ? (
-                  <>
-                    <span className="min-pulse" style={{ width: 8, height: 8, borderRadius: "50%", background: "#22c55e", display: "inline-block" }} />
-                    <span style={{ color: "#16a34a", fontWeight: 500 }}>后端 AI 引擎已连接</span>
-                    {data && <span style={{ color: "#64748B" }}>· v{data.version}</span>}
-                  </>
-                ) : (
-                  <>
-                    <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#ef4444", display: "inline-block" }} />
-                    <span style={{ color: "#dc2626" }}>后端未连接</span>
-                  </>
-                )
-              )}
-            </div>
+          <motion.p
+            custom={2}
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            style={{
+              fontFamily: sans,
+              fontSize: 18,
+              color: C.body,
+              lineHeight: 2,
+              margin: "0 0 56px",
+              maxWidth: 560,
+              letterSpacing: "0.04em",
+            }}
+          >
+            覆盖全学科的智能选校系统，横跨 13 个国家 593 个硕士项目。
+            <br />
+            <span style={{ color: C.muted }}>
+              约 45 道测评题，AI 构建你的决策画像，给出有理由的推荐。
+            </span>
+          </motion.p>
 
-            {/* CTAs */}
-            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-              <Link href="/onboarding" style={{ background: "linear-gradient(to right, #0052FF, #4D7CFF)", color: "#fff", padding: "14px 28px", borderRadius: 12, fontSize: 16, fontWeight: 700, textDecoration: "none", display: "flex", alignItems: "center", gap: 8, boxShadow: "0 6px 20px rgba(0,82,255,0.38)" }}>
-                <GraduationCap style={{ width: 18, height: 18 }} /> ★ 开始硕士专属测评 ★
-              </Link>
-              <Link href="/dashboard" style={{ background: "#fff", color: "#0F172A", padding: "14px 28px", borderRadius: 12, fontSize: 15, fontWeight: 600, textDecoration: "none", display: "flex", alignItems: "center", gap: 8, border: "1px solid #E2E8F0", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}>
-                <Target style={{ width: 18, height: 18 }} /> 查看项目匹配
-              </Link>
-            </div>
-          </div>
-
-          {/* Abstract graphic */}
-          <div style={{ position: "relative", height: 420, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            {/* Rotating ring */}
-            <div className="min-spin" style={{ position: "absolute", width: 320, height: 320, borderRadius: "50%", border: "1px dashed rgba(0,82,255,0.3)" }} />
-            <div className="min-spin" style={{ position: "absolute", width: 240, height: 240, borderRadius: "50%", border: "1px dashed rgba(77,124,255,0.25)", animationDirection: "reverse", animationDuration: "40s" }} />
-            {/* Center gradient circle */}
-            <div style={{ width: 160, height: 160, borderRadius: "50%", background: "linear-gradient(135deg, rgba(0,82,255,0.12), rgba(77,124,255,0.06))", border: "1px solid rgba(0,82,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <div style={{ width: 80, height: 80, borderRadius: "50%", background: "linear-gradient(135deg, #0052FF, #4D7CFF)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 8px 24px rgba(0,82,255,0.4)" }}>
-                <GraduationCap style={{ color: "#fff", width: 36, height: 36 }} />
-              </div>
-            </div>
-            {/* Floating stat cards */}
-            {[
-              { label: "项目覆盖", value: "500+", top: 30,  left: 20,  delay: "0s" },
-              { label: "匹配精度", value: "94%",  top: 60,  right: 10, delay: "0.8s" },
-              { label: "申请成功", value: "87%",  bottom: 40, left: 30, delay: "1.6s" },
-            ].map((c) => (
-              <div key={c.label} className="min-float" style={{ position: "absolute", background: "#fff", border: "1px solid #E2E8F0", borderRadius: 12, padding: "10px 16px", boxShadow: "0 4px 16px rgba(0,0,0,0.08)", animationDelay: c.delay, top: c.top, left: c.left, right: c.right, bottom: c.bottom } as React.CSSProperties}>
-                <p style={{ fontSize: 11, color: "#64748B", margin: 0 }}>{c.label}</p>
-                <p style={{ fontSize: 20, fontWeight: 700, color: "#0052FF", margin: 0 }}>{c.value}</p>
-              </div>
-            ))}
-          </div>
+          <motion.div
+            custom={3}
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            style={{ display: "flex", alignItems: "center", gap: 24 }}
+          >
+            <Link
+              href="/assessment"
+              style={{
+                background: C.ink,
+                color: C.cream,
+                padding: "16px 36px",
+                borderRadius: 12,
+                fontSize: 15,
+                fontWeight: 500,
+                textDecoration: "none",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 10,
+                transition: "transform 0.2s, box-shadow 0.2s",
+                fontFamily: sans,
+                letterSpacing: "0.03em",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "scale(1.02)"
+                e.currentTarget.style.boxShadow = "0 8px 32px rgba(0,0,0,0.18)"
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "scale(1)"
+                e.currentTarget.style.boxShadow = "none"
+              }}
+            >
+              开始测评 <ArrowRight style={{ width: 15, height: 15 }} />
+            </Link>
+            <span style={{ fontFamily: mono, fontSize: 12, color: C.muted, letterSpacing: "0.08em" }}>
+              约 10 分钟
+            </span>
+          </motion.div>
         </div>
       </section>
 
-      {/* Features */}
-      <section style={{ background: "#fff", padding: "80px 24px" }}>
-        <div style={{ maxWidth: 1152, margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: 56 }}>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(0,82,255,0.06)", border: "1px solid rgba(0,82,255,0.15)", borderRadius: 999, padding: "5px 14px", marginBottom: 16 }}>
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#0052FF", display: "inline-block" }} />
-              <span style={{ fontFamily: "var(--font-geist-mono, monospace)", fontSize: 10, letterSpacing: "0.15em", textTransform: "uppercase", color: "#0052FF" }}>核心功能</span>
-            </div>
-            <h2 className="font-calistoga" style={{ fontSize: "clamp(1.8rem, 3vw, 2.8rem)", color: "#0F172A", margin: 0, letterSpacing: "-0.01em" }}>
-              为什么选择 <span className="gradient-text">Optima</span>
-            </h2>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 24 }}>
-            {features.map((f) => (
-              <div key={f.title} style={{ background: "#fff", border: "1px solid #E2E8F0", borderRadius: 16, padding: 28, cursor: "default", transition: "all 0.2s", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 12px 32px rgba(0,82,255,0.1)"; (e.currentTarget as HTMLDivElement).style.transform = "translateY(-3px)" }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.boxShadow = "0 1px 3px rgba(0,0,0,0.04)"; (e.currentTarget as HTMLDivElement).style.transform = "translateY(0)" }}
+      {/* ─── Editorial divider with floating text ─── */}
+      <section style={{ padding: "0 32px", maxWidth: 1200, margin: "0 auto" }}>
+        <div style={{ borderTop: `1px solid ${C.cardBorder}`, position: "relative" }}>
+          <span style={{
+            position: "absolute", top: -8, left: 60,
+            background: C.cream, padding: "0 16px",
+            fontFamily: mono, fontSize: 10, color: C.muted,
+            letterSpacing: "0.2em", textTransform: "uppercase",
+          }}>
+            How it works
+          </span>
+        </div>
+      </section>
+
+      {/* ─── Stats Bar ─── */}
+      <section style={{ background: C.ink }}>
+        <div
+          style={{
+            maxWidth: 1200,
+            margin: "0 auto",
+            padding: "48px 32px",
+            display: "grid",
+            gridTemplateColumns: "repeat(4, 1fr)",
+            gap: 32,
+            textAlign: "center",
+          }}
+        >
+          {stats.map((s, i) => (
+            <motion.div
+              key={s.label}
+              variants={slideUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ delay: i * 0.08 }}
+            >
+              <p
+                style={{
+                  fontFamily: cnDisplay,
+                  fontSize: "clamp(2rem, 4vw, 3rem)",
+                  color: C.copper,
+                  margin: "0 0 6px",
+                  letterSpacing: "-0.02em",
+                  fontWeight: 400,
+                  lineHeight: 1,
+                }}
               >
-                <div style={{ width: 48, height: 48, borderRadius: 12, background: `linear-gradient(135deg, ${f.accent}, #4D7CFF)`, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16, boxShadow: `0 4px 12px ${f.accent}40` }}>
-                  <f.icon style={{ color: "#fff", width: 22, height: 22 }} />
-                </div>
-                <h3 style={{ fontSize: 16, fontWeight: 600, color: "#0F172A", margin: "0 0 8px", letterSpacing: "-0.01em" }}>{f.title}</h3>
-                <p style={{ fontSize: 13, color: "#64748B", lineHeight: 1.6, margin: 0 }}>{f.desc}</p>
-              </div>
-            ))}
-          </div>
+                {s.value}
+              </p>
+              <p
+                style={{
+                  fontFamily: mono,
+                  fontSize: 11,
+                  color: "rgba(255,255,255,0.5)",
+                  margin: 0,
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                }}
+              >
+                {s.label}
+              </p>
+            </motion.div>
+          ))}
         </div>
       </section>
 
-      {/* How it works — dark inverted section */}
-      <section style={{ background: "#0F172A", padding: "80px 24px", position: "relative", overflow: "hidden" }}>
-        {/* Dot texture */}
-        <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)", backgroundSize: "32px 32px", pointerEvents: "none" }} />
-        {/* Radial glow */}
-        <div style={{ position: "absolute", top: -100, right: -100, width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(0,82,255,0.15), transparent 70%)", pointerEvents: "none" }} />
-        <div style={{ maxWidth: 1152, margin: "0 auto", position: "relative" }}>
-          <div style={{ textAlign: "center", marginBottom: 56 }}>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(0,82,255,0.15)", border: "1px solid rgba(0,82,255,0.3)", borderRadius: 999, padding: "5px 14px", marginBottom: 16 }}>
-              <span className="min-pulse" style={{ width: 6, height: 6, borderRadius: "50%", background: "#4D7CFF", display: "inline-block" }} />
-              <span style={{ fontFamily: "var(--font-geist-mono, monospace)", fontSize: 10, letterSpacing: "0.15em", textTransform: "uppercase", color: "#4D7CFF" }}>快速开始</span>
-            </div>
-            <h2 className="font-calistoga" style={{ fontSize: "clamp(1.8rem, 3vw, 2.8rem)", color: "#fff", margin: 0 }}>
-              三步开始您的申请之旅
+      {/* ─── How It Works ─── */}
+      <section style={{ padding: "100px 32px" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <motion.div
+            variants={slideUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            style={{ marginBottom: 64 }}
+          >
+            <div
+              style={{
+                width: 40,
+                height: 2,
+                background: C.copper,
+                marginBottom: 20,
+              }}
+            />
+            <h2
+              style={{
+                fontFamily: cnDisplay,
+                fontSize: "clamp(1.8rem, 3vw, 2.5rem)",
+                color: C.ink,
+                margin: 0,
+                letterSpacing: "-0.02em",
+                fontWeight: 400,
+              }}
+            >
+              如 何 运 作
             </h2>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24 }}>
+          </motion.div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: 48,
+            }}
+          >
             {steps.map((step, i) => (
-              <div key={step.n} style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, padding: 32 }}>
-                <div style={{ fontSize: 40, fontWeight: 900, color: i === 0 ? "#4D7CFF" : "rgba(255,255,255,0.1)", fontFamily: "var(--font-geist-sans, sans-serif)", marginBottom: 16, letterSpacing: "-0.02em" }}>{step.n}</div>
-                <h3 style={{ fontSize: 17, fontWeight: 600, color: "#fff", margin: "0 0 10px" }}>{step.title}</h3>
-                <p style={{ fontSize: 13, color: "rgba(255,255,255,0.55)", lineHeight: 1.65, margin: 0 }}>{step.desc}</p>
-              </div>
+              <motion.div
+                key={step.n}
+                variants={slideUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ delay: i * 0.1 }}
+                style={{
+                  paddingTop: 32,
+                  borderTop: `1px solid ${C.cardBorder}`,
+                }}
+              >
+                <p
+                  style={{
+                    fontFamily: cnDisplay,
+                    fontSize: 48,
+                    color: C.cardBorder,
+                    margin: "0 0 20px",
+                    lineHeight: 1,
+                    fontWeight: 400,
+                  }}
+                >
+                  {step.n}
+                </p>
+                <h3
+                  style={{
+                    fontSize: 18,
+                    fontWeight: 500,
+                    color: C.ink,
+                    margin: "0 0 12px",
+                    letterSpacing: "-0.01em",
+                  }}
+                >
+                  {step.title}
+                </h3>
+                <p
+                  style={{
+                    fontSize: 15,
+                    color: C.body,
+                    lineHeight: 1.75,
+                    margin: 0,
+                  }}
+                >
+                  {step.desc}
+                </p>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section style={{ padding: "80px 24px" }}>
-        <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center", background: "#fff", border: "1px solid #E2E8F0", borderRadius: 24, padding: "56px 40px", boxShadow: "0 8px 40px rgba(0,82,255,0.08)" }}>
-          <div style={{ width: 64, height: 64, borderRadius: "50%", background: "linear-gradient(135deg, #0052FF, #4D7CFF)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px", boxShadow: "0 8px 24px rgba(0,82,255,0.35)" }}>
-            <CheckCircle2 style={{ color: "#fff", width: 28, height: 28 }} />
+      {/* ─── Features ─── */}
+      <section style={{ padding: "0 32px 100px" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <motion.div
+            variants={slideUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            style={{ marginBottom: 64 }}
+          >
+            <div
+              style={{
+                width: 40,
+                height: 2,
+                background: C.copper,
+                marginBottom: 20,
+              }}
+            />
+            <h2
+              style={{
+                fontFamily: cnDisplay,
+                fontSize: "clamp(1.8rem, 3vw, 2.5rem)",
+                color: C.ink,
+                margin: 0,
+                letterSpacing: "-0.02em",
+                fontWeight: 400,
+              }}
+            >
+              为 什 么 选 择  Optima
+            </h2>
+          </motion.div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(2, 1fr)",
+              gap: 24,
+            }}
+          >
+            {features.map((f, i) => (
+              <motion.div
+                key={f.title}
+                variants={slideUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ delay: i * 0.08 }}
+                style={{
+                  background: C.white,
+                  border: `1px solid ${C.cardBorder}`,
+                  borderRadius: 12,
+                  padding: 36,
+                  cursor: "default",
+                  transition: "transform 0.25s, box-shadow 0.25s",
+                  boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-2px) scale(1.005)"
+                  e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.08)"
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0) scale(1)"
+                  e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.04)"
+                }}
+              >
+                <div style={{ marginBottom: 20 }}>{f.icon}</div>
+                <h3
+                  style={{
+                    fontSize: 17,
+                    fontWeight: 500,
+                    color: C.ink,
+                    margin: "0 0 10px",
+                    letterSpacing: "-0.01em",
+                  }}
+                >
+                  {f.title}
+                </h3>
+                <p
+                  style={{
+                    fontSize: 15,
+                    color: C.body,
+                    lineHeight: 1.75,
+                    margin: 0,
+                  }}
+                >
+                  {f.desc}
+                </p>
+              </motion.div>
+            ))}
           </div>
-          <h2 className="font-calistoga" style={{ fontSize: "clamp(1.6rem, 3vw, 2.2rem)", color: "#0F172A", margin: "0 0 14px" }}>准备好开始了吗？</h2>
-          <p style={{ fontSize: 15, color: "#64748B", margin: "0 0 32px", lineHeight: 1.65 }}>立即创建您的硕士申请档案，获得专属 AI 推荐</p>
-          <Link href="/onboarding" style={{ background: "linear-gradient(to right, #0052FF, #4D7CFF)", color: "#fff", padding: "14px 32px", borderRadius: 12, fontSize: 16, fontWeight: 700, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 8, boxShadow: "0 6px 20px rgba(0,82,255,0.38)" }}>
-            ★ 开始硕士专属测评 ★ <ArrowRight style={{ width: 16, height: 16 }} />
-          </Link>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer style={{ borderTop: "1px solid #E2E8F0", background: "#fff", padding: "32px 24px", textAlign: "center" }}>
-        <p style={{ color: "#64748B", fontSize: 13, margin: "0 0 4px" }}>© 2026 Optima — 文商科硕士智能选校平台</p>
-        <p style={{ color: "#94A3B8", fontSize: 11, fontFamily: "var(--font-geist-mono, monospace)", margin: 0 }}>数据基于 IPEDS/NCES 官方数据库，匹配算法持续优化中</p>
+      {/* ─── CTA ─── */}
+      <section style={{ background: C.ink, padding: "100px 32px" }}>
+        <motion.div
+          variants={slideUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          style={{
+            maxWidth: 640,
+            margin: "0 auto",
+            textAlign: "center",
+          }}
+        >
+          <h2
+            style={{
+              fontFamily: cnDisplay,
+              fontSize: "clamp(2rem, 4vw, 3rem)",
+              color: C.cream,
+              margin: "0 0 16px",
+              letterSpacing: "-0.02em",
+              fontWeight: 400,
+            }}
+          >
+            准 备 好 了 吗
+          </h2>
+          <p
+            style={{
+              fontSize: 16,
+              color: "rgba(255,255,255,0.55)",
+              margin: "0 0 44px",
+              lineHeight: 1.7,
+            }}
+          >
+            完成约 45 道测评题，获得你的专属选校推荐
+          </p>
+          <Link
+            href="/assessment"
+            style={{
+              background: "transparent",
+              color: C.copper,
+              padding: "16px 36px",
+              borderRadius: 12,
+              fontSize: 16,
+              fontWeight: 500,
+              textDecoration: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 10,
+              border: `1.5px solid ${C.copper}`,
+              transition: "transform 0.2s, background 0.2s, color 0.2s",
+              fontFamily: sans,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "scale(1.02)"
+              e.currentTarget.style.background = C.copper
+              e.currentTarget.style.color = C.cream
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1)"
+              e.currentTarget.style.background = "transparent"
+              e.currentTarget.style.color = C.copper
+            }}
+          >
+            开始测评 <ArrowRight style={{ width: 16, height: 16 }} />
+          </Link>
+        </motion.div>
+      </section>
+
+      {/* ─── Footer ─── */}
+      <footer
+        style={{
+          borderTop: `1px solid ${C.cardBorder}`,
+          background: C.cream,
+          padding: "28px 32px",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: 1200,
+            margin: "0 auto",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <p
+            style={{
+              fontSize: 13,
+              color: C.muted,
+              margin: 0,
+            }}
+          >
+            &copy; 2026 Optima
+          </p>
+          <p
+            style={{
+              fontSize: 12,
+              color: C.muted,
+              margin: 0,
+              fontFamily: mono,
+              letterSpacing: "0.06em",
+            }}
+          >
+            覆盖全球 13 国 593 个项目
+          </p>
+        </div>
       </footer>
     </div>
   )

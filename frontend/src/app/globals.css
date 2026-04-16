@@ -51,25 +51,33 @@
 
 /* ── Global typography tokens ─────────────────────────────────────────────── */
 :root {
-  --font-serif-stack: var(--font-dm-serif), 'LXGW WenKai', 'STZhongsong', 'SimSun', serif;
+  /* Chinese heading: LXGW WenKai for warmth, fallback to Noto Serif SC */
+  --font-cn-display: var(--font-lxgw), var(--font-noto-serif-sc), 'STZhongsong', serif;
+  /* Latin heading: DM Serif Display */
+  --font-serif-stack: var(--font-dm-serif), var(--font-cn-display);
+  /* Body: DM Sans + Chinese sans fallbacks */
   --font-sans-stack:  var(--font-dm-sans), 'PingFang SC', var(--font-noto-sans-sc), 'Microsoft YaHei', sans-serif;
-  --leading-cn-body:  1.75;
-  /* Standard easing — no bouncy springs */
+  --leading-cn-body:  1.85;
+  --leading-cn-heading: 1.4;
+  /* Standard easing */
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-decelerate: cubic-bezier(0, 0, 0.2, 1);
   --ease-accelerate: cubic-bezier(0.4, 0, 1, 1);
 }
 
-/* Apply DM Sans as the primary UI body font globally */
+/* Body font */
 body {
   font-family: var(--font-sans-stack);
   line-height: var(--leading-cn-body);
+  letter-spacing: 0.02em;
 }
 
-/* DM Serif Display for semantic headings */
+/* Headings: LXGW WenKai for Chinese, DM Serif for Latin */
 h1, h2, h3 {
   font-family: var(--font-serif-stack);
-  letter-spacing: -0.01em;
+  letter-spacing: 0.03em;
+  line-height: var(--leading-cn-heading);
+  font-weight: 400;
 }
 
 /* Healing theme overrides heading font explicitly */

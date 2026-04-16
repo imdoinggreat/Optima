@@ -5,7 +5,7 @@ import { GraduationCap, Target, BookOpen, TrendingUp, Users } from "lucide-react
 import { useEffect, useState } from "react"
 import { useHealth } from "@/hooks/use-health"
 
-const HERO_TEXT = "文商科硕士智能选校平台"
+const HERO_TEXT = "全球硕士智能选校平台"
 
 function TypewriterHeading({ text }: { text: string }) {
   const [displayed, setDisplayed] = useState("")
@@ -65,10 +65,10 @@ function TermPane({ title, children }: { title: string; children: React.ReactNod
 }
 
 const features = [
-  { icon: Target,     cmd: "smart-match",  desc: "AI驱动的硕士项目精准匹配",  flag: "--ai-powered" },
-  { icon: BookOpen,   cmd: "prereq-scan",  desc: "先修课匹配度量化分析",       flag: "--analyze" },
-  { icon: TrendingUp, cmd: "career-path",  desc: "就业去向与职业路径可视化",   flag: "--visualize" },
-  { icon: Users,      cmd: "track",        desc: "申请全流程一站式追踪管理",   flag: "--all-stages" },
+  { icon: Target,     cmd: "multi-signal",    desc: "多信号推断引擎，构建决策画像",  flag: "--infer" },
+  { icon: BookOpen,   cmd: "conflict-detect", desc: "认知冲突检测，发现偏好矛盾",       flag: "--analyze" },
+  { icon: TrendingUp, cmd: "match-593",       desc: "593项目逐一评分，附why+risk",   flag: "--explain" },
+  { icon: Users,      cmd: "coverage",        desc: "全学科13国覆盖CS/人文/艺术等",   flag: "--all-disciplines" },
 ]
 
 export default function LandingTerminal() {
@@ -91,7 +91,7 @@ export default function LandingTerminal() {
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
             <span style={{ color: "#1f521f", fontSize: 11 }}>[{time}]</span>
-            <Link href="/onboarding"
+            <Link href="/assessment"
               style={{ color: "#0a0a0a", background: "#33ff00", padding: "4px 14px", fontFamily: "inherit", fontSize: 12, fontWeight: 700, textDecoration: "none", letterSpacing: "0.08em", textTransform: "uppercase", border: "1px solid #33ff00", display: "inline-block", textShadow: "none" }}
               onMouseEnter={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#33ff00" }}
               onMouseLeave={(e) => { e.currentTarget.style.background = "#33ff00"; e.currentTarget.style.color = "#0a0a0a" }}
@@ -112,7 +112,7 @@ export default function LandingTerminal() {
               { prompt: "$", text: "optima --init", color: "#1f521f" },
               { prompt: ">", text: "Loading AI engine...                [OK]", color: "#33ff00" },
               { prompt: ">", text: "Connecting to database...           [OK]", color: "#33ff00" },
-              { prompt: ">", text: "Indexing 500+ programs...           [OK]", color: "#33ff00" },
+              { prompt: ">", text: "Indexing 593 programs...            [OK]", color: "#33ff00" },
             ].map((line, i) => (
               <div key={i} style={{ fontSize: 11, color: line.color, marginBottom: 2, display: "flex", gap: 8 }}>
                 <span style={{ color: "#1f521f", minWidth: 12 }}>{line.prompt}</span>
@@ -127,7 +127,7 @@ export default function LandingTerminal() {
                 <TypewriterHeading text={HERO_TEXT} />
               </h1>
               <p style={{ fontSize: 13, color: "#1f521f", margin: "0 0 16px", lineHeight: 1.65 }}>
-                # 专为文商科背景设计的AI选校系统<br />
+                # 覆盖全学科的AI选校系统<br />
                 # 基于真实数据匹配最适合您的硕士项目
               </p>
             </div>
@@ -149,7 +149,7 @@ export default function LandingTerminal() {
 
             {/* CTAs */}
             <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              <Link href="/onboarding"
+              <Link href="/assessment"
                 style={{ color: "#0a0a0a", background: "#33ff00", padding: "10px 20px", fontFamily: "inherit", fontSize: 14, fontWeight: 800, textDecoration: "none", letterSpacing: "0.05em", display: "inline-flex", alignItems: "center", gap: 6, border: "1px solid #33ff00", boxShadow: "0 0 12px rgba(51,255,0,0.35)" }}
                 onMouseEnter={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#33ff00" }}
                 onMouseLeave={(e) => { e.currentTarget.style.background = "#33ff00"; e.currentTarget.style.color = "#0a0a0a" }}
@@ -157,13 +157,13 @@ export default function LandingTerminal() {
                 <GraduationCap style={{ width: 14, height: 14 }} />
                 [ ★ 开始硕士专属测评 ★ ]
               </Link>
-              <Link href="/dashboard"
+              <Link href="/assessment"
                 style={{ color: "#33ff00", background: "transparent", padding: "8px 18px", fontFamily: "inherit", fontSize: 13, textDecoration: "none", letterSpacing: "0.05em", display: "inline-flex", alignItems: "center", gap: 6, border: "1px solid #1f521f" }}
                 onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#33ff00"; e.currentTarget.style.background = "rgba(51,255,0,0.06)" }}
                 onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#1f521f"; e.currentTarget.style.background = "transparent" }}
               >
                 <Target style={{ width: 14, height: 14 }} />
-                [ 查看项目匹配 ]
+                [ 了解测评内容 ]
               </Link>
             </div>
           </div>
@@ -194,7 +194,7 @@ export default function LandingTerminal() {
             <AsciiBar pct={100} label="DB_CONNECTION" />
             <AsciiBar pct={78} label="ENGINE_LOAD" />
             <div style={{ marginTop: 10, fontSize: 11, color: "#1f521f" }}>
-              <span style={{ color: "#ffb000" }}>OUTPUT:</span> programs_indexed=500 | active_users=12345 | uptime=99.9%
+              <span style={{ color: "#ffb000" }}>OUTPUT:</span> programs_indexed=593 | countries=13 | uptime=99.9%
             </div>
           </TermPane>
         </div>
@@ -204,9 +204,9 @@ export default function LandingTerminal() {
           <TermPane title="README.md — QUICK START">
             <div style={{ fontSize: 11, color: "#1f521f", marginBottom: 8 }}>$ cat quickstart.sh</div>
             {[
-              { step: "01", cmd: "optima assessment --type=master", desc: "完成大五人格精简版与选校偏好测评，生成初始权重" },
-              { step: "02", cmd: "optima profile --update gpa,prereq,experience", desc: "补充 GPA、先修课、经历与偏好，精确化推荐引擎" },
-              { step: "03", cmd: "optima match --show-results --ai", desc: "查看项目详情、就业数据、费用分析，作出明智决策" },
+              { step: "01", cmd: "optima assessment --modules=A-F --questions=45", desc: "完成6大模块测评：终极目标、背景快照、性格-环境匹配、价值取舍等" },
+              { step: "02", cmd: "optima infer --archetype --conflicts", desc: "多信号推断引擎构建原型画像，检测认知冲突与隐含偏好" },
+              { step: "03", cmd: "optima match --programs=593 --explain", desc: "593个项目逐一匹配评分，每条推荐都有why和risk解释" },
             ].map((s) => (
               <div key={s.step} style={{ marginBottom: 12, paddingLeft: 4, borderLeft: "2px solid #1f521f" }}>
                 <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 3 }}>
@@ -219,7 +219,7 @@ export default function LandingTerminal() {
 
             <div style={{ marginTop: 16, borderTop: "1px dashed #1f521f", paddingTop: 12 }}>
               <div style={{ fontSize: 11, color: "#1f521f", marginBottom: 8 }}>$ optima --start-now</div>
-              <Link href="/onboarding"
+              <Link href="/assessment"
                 style={{ color: "#0a0a0a", background: "#33ff00", padding: "10px 22px", fontFamily: "inherit", fontSize: 14, fontWeight: 800, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6, letterSpacing: "0.05em", boxShadow: "0 0 12px rgba(51,255,0,0.35)" }}
                 onMouseEnter={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#33ff00"; e.currentTarget.style.outline = "1px solid #33ff00" }}
                 onMouseLeave={(e) => { e.currentTarget.style.background = "#33ff00"; e.currentTarget.style.color = "#0a0a0a"; e.currentTarget.style.outline = "none" }}
@@ -236,10 +236,10 @@ export default function LandingTerminal() {
       <footer style={{ borderTop: "1px solid #1f521f", padding: "12px 20px", marginTop: 24 }}>
         <div style={{ maxWidth: 960, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
           <span style={{ fontSize: 11, color: "#1f521f" }}>
-            <span style={{ color: "#33ff00" }}>//</span> © 2026 OPTIMA — 文商科硕士智能选校平台
+            <span style={{ color: "#33ff00" }}>//</span> © 2026 OPTIMA — 全球硕士智能选校平台
           </span>
           <span style={{ fontSize: 10, color: "#1f521f", fontStyle: "italic" }}>
-            # 数据基于 IPEDS/NCES 官方数据库
+            # 覆盖全球 13 国 593 个项目
           </span>
         </div>
       </footer>

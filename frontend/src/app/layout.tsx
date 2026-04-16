@@ -10,6 +10,8 @@ import {
   DM_Serif_Display,
   DM_Sans,
   Noto_Sans_SC,
+  Noto_Serif_SC,
+  LXGW_WenKai_TC,
 } from "next/font/google"
 import "./globals.css"
 import { Providers } from "./providers"
@@ -59,10 +61,20 @@ const notoSansSC = Noto_Sans_SC({
   subsets: ["latin"],
   weight: ["300", "400", "500", "700"],
 })
+const notoSerifSC = Noto_Serif_SC({
+  variable: "--font-noto-serif-sc",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "700"],
+})
+const lxgwWenKai = LXGW_WenKai_TC({
+  variable: "--font-lxgw",
+  subsets: ["latin"],
+  weight: ["300", "400", "700"],
+})
 
 export const metadata: Metadata = {
-  title: "Optima — 文商科硕士智能选校平台",
-  description: "专为文商科背景设计的AI选校系统",
+  title: "Optima — 全球留学智能选校平台",
+  description: "基于多信号推断的AI选校决策系统，覆盖全学科593个项目，13个国家",
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -80,6 +92,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dmSerifDisplay.variable,
           dmSans.variable,
           notoSansSC.variable,
+          notoSerifSC.variable,
+          lxgwWenKai.variable,
           "antialiased",
         ].join(" ")}
       >

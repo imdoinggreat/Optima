@@ -38,9 +38,9 @@ class TechnicalIntensity(str, Enum):
     EASY = "轻松"
 
 class CareerSupport(str, Enum):
-    DEDICATED = "项目专属"
-    SCHOOL_SHARED = "学院共享"
-    UNIVERSITY_GENERAL = "学校通用"
+    HIGH = "强"
+    MEDIUM = "中"
+    LOW = "低"
 
 class CompetitionIntensity(str, Enum):
     HIGH = "卷王"
@@ -55,7 +55,8 @@ class ResearchExperience(str, Enum):
     PUBLISHED_PAPER = "发表论文"
 
 class CareerGoal(str, Enum):
-    STAY_USA = "留美就业"
+    STAY_ABROAD = "留在当地就业"
+    EXPERIENCE_THEN_RETURN = "海外经验后回国"
     RETURN_CHINA = "回国就业"
     CONTINUE_STUDY = "继续深造"
     ENTREPRENEUR = "创业"
@@ -109,8 +110,8 @@ class UserBase(BaseModel):
         "min_duration": 12,
         "max_duration": 24,
         "max_tuition": 80000,
-        "must_stem": True,
-        "preferred_regions": ["美东", "美西"],
+        "must_stem": False,
+        "preferred_destinations": [],
         "technical_intensity": "适中"
     })
     test_scores: Dict[str, Any] = Field(default={
@@ -375,124 +376,188 @@ class MasterAssessmentResultResponse(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
-# ========== 项目相关模型 ==========
+# ========== 项目相关模型（v3：全球化 + 软性维度） ==========
 class ProgramBase(BaseModel):
     """项目基础信息模型"""
     program_name: str = Field(..., min_length=2, max_length=200)
     university: str = Field(..., min_length=2, max_length=200)
-    degree_subtype: DegreeSubtype
-    is_stem: bool = Field(default=False)
-    cpt_policy: Optional[str] = None
-    concentrations: List[str] = Field(default=[])
-    prerequisite_courses: List[str] = Field(default=[])
-    preferred_background: List[str] = Field(default=[])
-    admission_rounds: List[str] = Field(default=[])
-    cohort_size: Optional[int] = Field(None, gt=0)
-    international_ratio: Optional[float] = Field(None, ge=0, le=1)
-    employment_industries: List[str] = Field(default=[])
-    top_employers: List[str] = Field(default=[])
-    school_tier: SchoolTier
-    program_popularity: float = Field(default=0, ge=0, le=1)
-    
-    # 课程自由度与硬核度
-    course_flexibility: CourseFlexibility
-    cross_registration: bool = Field(default=False)
-    technical_intensity: TechnicalIntensity
-    
-    # 真实成本
-    total_cost_usd: Optional[int] = Field(None, gt=0)
-    living_cost_usd: Optional[int] = Field(None, gt=0)
-    scholarship_rate: Optional[float] = Field(None, ge=0, le=1)
-    average_scholarship_usd: Optional[int] = Field(None, ge=0)
-    
-    # 就业服务
-    career_support: CareerSupport
-    interview_required: bool = Field(default=False)
-    
+    degree_subtype: Optional[str] = None
+    is_stem: Optional[bool] = None
+
+    # 全球化定位
+    country: Optional[str] = None
+    region: Optional[str] = None
+    city: Optional[str] = None
+    city_tier: Optional[str] = None
+    teaching_language: Optional[str] = None
+
+    # 排名
+    qs_ranking: Optional[int] = None
+    us_news_ranking: Optional[int] = None
+    subject_ranking: Optional[int] = None
+    school_tier: Optional[str] = None          # HYPMS/Top10/.../Top100/其他
+
     # 录取要求
-    gre_required: bool = Field(default=True)
-    avg_gre_verbal: Optional[int] = Field(None, ge=130, le=170)
-    avg_gre_quant: Optional[int] = Field(None, ge=130, le=170)
-    avg_gpa: Optional[float] = Field(None, ge=0, le=4.0)
-    application_deadlines: Dict[str, str] = Field(default={})
-    application_fee_usd: Optional[int] = Field(None, ge=0)
-    rolling_admission: bool = Field(default=False)
-    
+    gre_required: Optional[bool] = None
+    avg_gre_verbal: Optional[int] = None
+    avg_gre_quant: Optional[int] = None
+    avg_gpa: Optional[float] = None
+    min_toefl: Optional[int] = None
+    min_ielts: Optional[float] = None
+    requires_secondary_language: Optional[bool] = None
+    application_deadlines: Optional[Dict[str, str]] = Field(default=None)
+    application_fee_usd: Optional[int] = None
+    rolling_admission: Optional[bool] = None
+
     # 项目结构
-    dual_degree_available: bool = Field(default=False)
-    employment_rate_3month: Optional[float] = Field(None, ge=0, le=1)
-    avg_starting_salary_usd: Optional[int] = Field(None, ge=0)
-    internship_required: bool = Field(default=False)
-    capstone_required: bool = Field(default=True)
-    duration_months: int = Field(..., gt=0)
-    credits_required: int = Field(..., gt=0)
-    
+    duration_months: Optional[int] = None
+    credits_required: Optional[int] = None
+    course_flexibility: Optional[str] = None
+    cross_registration: Optional[bool] = None
+    technical_intensity: Optional[str] = None
+    dual_degree_available: Optional[bool] = None
+    internship_required: Optional[bool] = None
+    capstone_required: Optional[bool] = None
+    has_coop: Optional[bool] = None
+    exchange_opportunities: Optional[bool] = None
+    concentrations: Optional[List[str]] = None
+    prerequisite_courses: Optional[List[str]] = None
+    preferred_background: Optional[List[str]] = None
+    admission_rounds: Optional[List[str]] = None
+    cpt_policy: Optional[str] = None
+
+    # 经济
+    total_cost_usd: Optional[int] = None
+    living_cost_usd: Optional[int] = None
+    scholarship_rate: Optional[float] = None
+    average_scholarship_usd: Optional[int] = None
+
+    # 就业
+    career_support: Optional[str] = None
+    employment_rate_3month: Optional[float] = None
+    avg_starting_salary_usd: Optional[int] = None
+    employment_industries: Optional[List[str]] = None
+    top_employers: Optional[List[str]] = None
+    interview_required: Optional[bool] = None
+
     # 班级生态
-    class_avg_size: Optional[int] = Field(None, gt=0)
-    faculty_student_ratio: Optional[float] = Field(None, gt=0)
-    peer_quality_score: Optional[float] = Field(None, ge=0, le=5)
-    competition_intensity: CompetitionIntensity
-    
+    cohort_size: Optional[int] = None
+    international_ratio: Optional[float] = None
+    chinese_student_ratio: Optional[float] = None
+    class_avg_size: Optional[int] = None
+    faculty_student_ratio: Optional[float] = None
+    peer_quality_score: Optional[float] = None
+    competition_intensity: Optional[str] = None  # 低/中/高/极高
+    program_popularity: Optional[float] = None
+
+    # 签证与移民
+    post_grad_work_visa: Optional[str] = None
+    work_visa_duration_months: Optional[int] = None
+    immigration_friendly: Optional[str] = None  # 低/中/高
+    pr_pathway_score: Optional[float] = None
+    return_to_china_recognition: Optional[str] = None  # 低/中/高
+
+    # 软性维度
+    academic_pressure: Optional[str] = None     # 低/中/高/极高
+    social_culture: Optional[str] = None
+    campus_safety: Optional[str] = None         # 低/中/高
+    city_livability: Optional[float] = None
+    chinese_community_support: Optional[str] = None
+    cultural_distance: Optional[str] = None     # 低/中/高
+    political_climate: Optional[str] = None
+    isolation_risk: Optional[str] = None        # 低/中/高
+
     # 资源链接
     program_website: Optional[str] = None
     linkedin_alumni_url: Optional[str] = None
     employment_report_url: Optional[str] = None
 
+
 class ProgramCreate(ProgramBase):
     pass
 
+
 class ProgramUpdate(BaseModel):
+    """所有字段可选的更新模型"""
     program_name: Optional[str] = None
     university: Optional[str] = None
-    degree_subtype: Optional[DegreeSubtype] = None
+    degree_subtype: Optional[str] = None
     is_stem: Optional[bool] = None
-    cpt_policy: Optional[str] = None
-    concentrations: Optional[List[str]] = None
-    prerequisite_courses: Optional[List[str]] = None
-    preferred_background: Optional[List[str]] = None
-    admission_rounds: Optional[List[str]] = None
-    cohort_size: Optional[int] = None
-    international_ratio: Optional[float] = None
-    employment_industries: Optional[List[str]] = None
-    top_employers: Optional[List[str]] = None
-    school_tier: Optional[SchoolTier] = None
-    program_popularity: Optional[float] = None
-    course_flexibility: Optional[CourseFlexibility] = None
-    cross_registration: Optional[bool] = None
-    technical_intensity: Optional[TechnicalIntensity] = None
-    total_cost_usd: Optional[int] = None
-    living_cost_usd: Optional[int] = None
-    scholarship_rate: Optional[float] = None
-    average_scholarship_usd: Optional[int] = None
-    career_support: Optional[CareerSupport] = None
-    interview_required: Optional[bool] = None
+    country: Optional[str] = None
+    region: Optional[str] = None
+    city: Optional[str] = None
+    city_tier: Optional[str] = None
+    teaching_language: Optional[str] = None
+    qs_ranking: Optional[int] = None
+    us_news_ranking: Optional[int] = None
+    subject_ranking: Optional[int] = None
+    school_tier: Optional[str] = None
     gre_required: Optional[bool] = None
     avg_gre_verbal: Optional[int] = None
     avg_gre_quant: Optional[int] = None
     avg_gpa: Optional[float] = None
+    min_toefl: Optional[int] = None
+    min_ielts: Optional[float] = None
+    requires_secondary_language: Optional[bool] = None
     application_deadlines: Optional[Dict[str, str]] = None
     application_fee_usd: Optional[int] = None
     rolling_admission: Optional[bool] = None
-    dual_degree_available: Optional[bool] = None
-    employment_rate_3month: Optional[float] = None
-    avg_starting_salary_usd: Optional[int] = None
-    internship_required: Optional[bool] = None
-    capstone_required: Optional[bool] = None
     duration_months: Optional[int] = None
     credits_required: Optional[int] = None
+    course_flexibility: Optional[str] = None
+    cross_registration: Optional[bool] = None
+    technical_intensity: Optional[str] = None
+    dual_degree_available: Optional[bool] = None
+    internship_required: Optional[bool] = None
+    capstone_required: Optional[bool] = None
+    has_coop: Optional[bool] = None
+    exchange_opportunities: Optional[bool] = None
+    concentrations: Optional[List[str]] = None
+    prerequisite_courses: Optional[List[str]] = None
+    preferred_background: Optional[List[str]] = None
+    admission_rounds: Optional[List[str]] = None
+    cpt_policy: Optional[str] = None
+    total_cost_usd: Optional[int] = None
+    living_cost_usd: Optional[int] = None
+    scholarship_rate: Optional[float] = None
+    average_scholarship_usd: Optional[int] = None
+    career_support: Optional[str] = None
+    employment_rate_3month: Optional[float] = None
+    avg_starting_salary_usd: Optional[int] = None
+    employment_industries: Optional[List[str]] = None
+    top_employers: Optional[List[str]] = None
+    interview_required: Optional[bool] = None
+    cohort_size: Optional[int] = None
+    international_ratio: Optional[float] = None
+    chinese_student_ratio: Optional[float] = None
     class_avg_size: Optional[int] = None
     faculty_student_ratio: Optional[float] = None
     peer_quality_score: Optional[float] = None
-    competition_intensity: Optional[CompetitionIntensity] = None
+    competition_intensity: Optional[str] = None
+    program_popularity: Optional[float] = None
+    post_grad_work_visa: Optional[str] = None
+    work_visa_duration_months: Optional[int] = None
+    immigration_friendly: Optional[str] = None
+    pr_pathway_score: Optional[float] = None
+    return_to_china_recognition: Optional[str] = None
+    academic_pressure: Optional[str] = None
+    social_culture: Optional[str] = None
+    campus_safety: Optional[str] = None
+    city_livability: Optional[float] = None
+    chinese_community_support: Optional[str] = None
+    cultural_distance: Optional[str] = None
+    political_climate: Optional[str] = None
+    isolation_risk: Optional[str] = None
     program_website: Optional[str] = None
     linkedin_alumni_url: Optional[str] = None
     employment_report_url: Optional[str] = None
 
+
 class ProgramResponse(ProgramBase):
     id: int
     created_at: datetime
-    updated_at: datetime
-    
+    updated_at: Optional[datetime] = None
+
     model_config = ConfigDict(from_attributes=True)
 
 # ========== 看板数据模型 ==========

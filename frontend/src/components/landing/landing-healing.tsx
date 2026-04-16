@@ -10,26 +10,26 @@ import { useHealth } from "@/hooks/use-health"
 const features = [
   {
     icon: Compass,
-    title: "智能项目匹配",
-    desc: "基于你的 GPA、先修课、实习经历，精准推荐最适合的硕士项目",
+    title: "多信号推断引擎",
+    desc: "基于~45题测评的多信号推断，构建你的决策画像与原型匹配",
     accent: "hsl(36,28%,68%)",
   },
   {
     icon: BookOpen,
-    title: "先修课匹配分析",
-    desc: "深度对比你与目标项目的先修课缺口，避开申请雷区",
+    title: "认知冲突检测",
+    desc: "自动发现你偏好中的矛盾信号，帮你看清真实诉求",
     accent: "hsl(150,32%,33%)",
   },
   {
     icon: TrendingUp,
-    title: "职业路径可视化",
-    desc: "清晰展示每个项目的就业去向与薪资分布，选择更有把握",
+    title: "项目级精准匹配",
+    desc: "593个项目逐一评分，每条推荐都附带why与risk解释",
     accent: "hsl(45,45%,55%)",
   },
   {
     icon: Target,
-    title: "申请全流程追踪",
-    desc: "梦校 / 目标校 / 保底校三档管理，进度一目了然",
+    title: "全学科13国覆盖",
+    desc: "CS、人文、艺术、商科、社科等全学科，覆盖13个国家",
     accent: "hsl(0,52%,55%)",
   },
 ]
@@ -37,20 +37,20 @@ const features = [
 const steps = [
   {
     n: "一",
-    title: "完成硕士专属测评",
-    desc: "大五人格简版 + 选校偏好，生成你的专属策略权重，只需 5 分钟",
+    title: "做测评（~45题）",
+    desc: "完成6大模块测评，涵盖终极目标、背景快照、性格-环境匹配、价值取舍等",
     emoji: "✍️",
   },
   {
     n: "二",
-    title: "完善申请档案",
-    desc: "填写 GPA、先修课程、实习科研和职业目标，让推荐引擎更精准",
+    title: "AI分析决策画像",
+    desc: "多信号推断引擎构建你的原型画像，检测认知冲突与隐含偏好",
     emoji: "📋",
   },
   {
     n: "三",
-    title: "获取 AI 匹配结果",
-    desc: "查看项目详情、先修课缺口分析、就业数据，做出明智决策",
+    title: "获得个性化选校推荐",
+    desc: "593个项目逐一匹配评分，每条推荐都有why和risk解释",
     emoji: "🎯",
   },
 ]
@@ -291,7 +291,7 @@ export default function LandingHealing() {
             }}>Optima</span>
           </div>
           <Link
-            href="/onboarding"
+            href="/assessment"
             className="healing-border-beam"
             style={{
               background: "hsl(36,28%,68%)",
@@ -369,7 +369,7 @@ export default function LandingHealing() {
                 fontSize: 11, letterSpacing: "0.12em",
                 textTransform: "uppercase" as const,
                 color: "hsl(150,32%,33%)",
-              }}>文商科 AI 选校引擎</span>
+              }}>AI 智能选校引擎</span>
             </div>
 
             <h1 style={{
@@ -380,7 +380,7 @@ export default function LandingHealing() {
               margin: "0 0 20px",
               letterSpacing: "0.01em",
             }}>
-              文商科硕士
+              硕士留学
               <br />
               <span style={{ color: "hsl(36,28%,52%)" }}>智能选校</span>
               <span style={{ color: "hsl(0,0%,15%)" }}> 平台</span>
@@ -392,7 +392,7 @@ export default function LandingHealing() {
               margin: "0 0 32px",
               fontFamily: "var(--font-geist-sans, sans-serif)",
             }}>
-              专为文商科背景设计的 AI 选校系统，基于真实数据精准匹配最适合你的硕士项目。
+              覆盖全学科的 AI 选校系统，基于真实数据精准匹配最适合你的硕士项目。
             </p>
 
             {/* Server status */}
@@ -417,7 +417,7 @@ export default function LandingHealing() {
             {/* CTAs */}
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap" as const }}>
               <Link
-                href="/onboarding"
+                href="/assessment"
                 className="healing-border-beam"
                 style={{
                   background: "hsl(36,28%,68%)",
@@ -446,7 +446,7 @@ export default function LandingHealing() {
                 开始硕士专属测评
               </Link>
               <Link
-                href="/dashboard"
+                href="/assessment"
                 style={{
                   background: "transparent",
                   color: "hsl(0,0%,30%)",
@@ -470,7 +470,7 @@ export default function LandingHealing() {
                   ;(e.currentTarget as HTMLAnchorElement).style.borderColor = "hsl(38,20%,85%)"
                 }}
               >
-                查看项目匹配 <ArrowRight style={{ width: 15, height: 15 }} />
+                了解测评内容 <ArrowRight style={{ width: 15, height: 15 }} />
               </Link>
             </div>
           </div>
@@ -507,7 +507,7 @@ export default function LandingHealing() {
 
             {/* Floating stat cards */}
             {[
-              { label: "项目覆盖", value: "500+", top: 40,  left: 18,  delay: "0s",   accent: "hsl(36,28%,68%)" },
+              { label: "项目覆盖", value: "593", top: 40,  left: 18,  delay: "0s",   accent: "hsl(36,28%,68%)" },
               { label: "匹配精度", value: "94%",  top: 70,  right: 8,  delay: "0.9s", accent: "hsl(150,32%,40%)" },
               { label: "申请成功", value: "87%",  bottom: 50, left: 24, delay: "1.8s", accent: "hsl(45,40%,55%)" },
             ].map((c) => (
@@ -707,10 +707,10 @@ export default function LandingHealing() {
             margin: "0 0 32px", lineHeight: 1.7,
             fontFamily: "var(--font-geist-sans)",
           }}>
-            立即创建硕士申请档案，获得专属 AI 推荐
+            完成~45题测评，获得专属 AI 选校推荐
           </p>
           <Link
-            href="/onboarding"
+            href="/assessment"
             className="healing-border-beam"
             style={{
               background: "hsl(36,28%,68%)",
@@ -763,10 +763,10 @@ export default function LandingHealing() {
           }}>Optima</span>
         </div>
         <p style={{ color: "hsl(0,0%,55%)", fontSize: 13, margin: "0 0 4px", fontFamily: "var(--font-geist-sans)" }}>
-          © 2026 Optima — 文商科硕士智能选校平台
+          © 2026 Optima — 全球硕士智能选校平台
         </p>
         <p style={{ color: "hsl(0,0%,65%)", fontSize: 11, fontFamily: "var(--font-geist-mono, monospace)", margin: 0 }}>
-          数据基于 IPEDS / NCES 官方数据库，匹配算法持续优化中
+          覆盖全球 13 国 593 个项目，匹配算法持续优化中
         </p>
       </footer>
     </div>

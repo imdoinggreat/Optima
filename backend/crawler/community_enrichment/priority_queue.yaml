@@ -1,0 +1,954 @@
+# 反向驱动项目队列（初始 30 条 review 版）
+#
+# 字段说明:
+#   slug           : 唯一标识, snake_case, POC 文件名用
+#   name           : 人类可读全名
+#   priority       : A (本月必做) / B (本季度) / C (可选)
+#   category       : 分类, 用于统计和筛选
+#   country        : 预期国家
+#   aliases        : 用于 query 增强 + 相关性过滤
+#     school       : 学校别名数组
+#     program      : 项目别名数组
+#   query_keywords : 种子查询, run_poc 会追加 "硕士/留学/申请" 锚词
+#   db_program_id  : DB 主键, 未知 = null (走 pending 流程)
+#   status         : pending | done | skip
+#   notes          : 可选备注
+
+programs:
+  # ═══════════════════════════════════════════════════════════════
+  # 美国 CS 顶尖 (8 条)
+  # ═══════════════════════════════════════════════════════════════
+  - slug: stanford_mscs
+    name: Stanford MS in Computer Science
+    priority: A
+    category: cs_us_top
+    country: 美国
+    aliases:
+      school: [Stanford, 斯坦福]
+      program: [MSCS, MS CS, 计算机科学硕士]
+    query_keywords:
+      - Stanford MSCS 就业
+      - 斯坦福 CS 硕士 申请
+      - Stanford CS 中国人
+      - 斯坦福 MSCS 劝退
+    db_program_id: 1
+    status: done
+
+  - slug: mit_meng_cs
+    name: MIT Master of Engineering in EECS
+    priority: A
+    category: cs_us_top
+    country: 美国
+    aliases:
+      school: [MIT, 麻省理工]
+      program: [MEng, EECS, 6A, 计算机工程硕士]
+    query_keywords:
+      - MIT MEng EECS 就业
+      - 麻省理工 计算机硕士 申请
+      - MIT 6A 中国人
+      - MIT EECS 硕士 难度
+    db_program_id: null
+    status: pending
+
+  - slug: cmu_mscs
+    name: CMU Master of Science in Computer Science
+    priority: A
+    category: cs_us_top
+    country: 美国
+    aliases:
+      school: [CMU, Carnegie Mellon, 卡梅, 卡内基梅隆]
+      program: [MSCS, MS in CS, MS CS, SCS, 计算机科学硕士]
+    query_keywords:
+      - CMU MSCS 就业
+      - 卡梅 MSCS 难度
+      - CMU 计算机 中国人
+      - CMU SCS 性价比
+    db_program_id: 396
+    status: done
+
+  - slug: princeton_mse_cs
+    name: Princeton MSE in Computer Science
+    priority: B
+    category: cs_us_top
+    country: 美国
+    aliases:
+      school: [Princeton, 普林斯顿]
+      program: [MSE CS, MS CS, 计算机硕士]
+    query_keywords:
+      - Princeton CS 硕士 就业
+      - 普林斯顿 计算机 申请
+      - Princeton MSE CS 中国人
+      - 普林 CS 硕士 难度
+    db_program_id: null
+    status: pending
+
+  - slug: berkeley_meng_eecs
+    name: UC Berkeley MEng in EECS
+    priority: A
+    category: cs_us_top
+    country: 美国
+    aliases:
+      school: [Berkeley, 伯克利, UCB, UC Berkeley]
+      program: [MEng EECS, 工程硕士, 一年制硕士]
+    query_keywords:
+      - Berkeley MEng EECS 就业
+      - 伯克利 MEng 性价比
+      - UCB MEng 中国人
+      - Berkeley 一年制 硕士 劝退
+    db_program_id: null
+    status: pending
+
+  - slug: cornell_tech_meng_cs
+    name: Cornell Tech MEng in Computer Science
+    priority: A
+    category: cs_us_top
+    country: 美国
+    aliases:
+      school: [Cornell Tech, 康奈尔科技, Cornell]
+      program: [MEng CS, Cornell Tech 一年制]
+    query_keywords:
+      - Cornell Tech CS 就业
+      - 康奈尔 Tech MEng 申请
+      - Cornell Tech 中国人
+      - 康奈尔 Tech 性价比
+    db_program_id: null
+    status: pending
+
+  - slug: uiuc_mcs
+    name: UIUC Master of Computer Science
+    priority: A
+    category: cs_us_top
+    country: 美国
+    aliases:
+      school: [UIUC, Illinois Urbana, 伊利诺伊, 香槟]
+      program: [MCS, Master of Computer Science, CS 硕士]
+    query_keywords:
+      - UIUC MCS 就业
+      - 伊利诺伊 MCS 申请
+      - UIUC CS 中国人
+      - UIUC MCS 性价比
+    db_program_id: 20
+    status: done
+
+  - slug: gatech_mscs_oncampus
+    name: Georgia Tech MS in Computer Science (on-campus)
+    priority: A
+    category: cs_us_top
+    country: 美国
+    aliases:
+      school: [GT, GaTech, Georgia Tech, 佐治亚理工]
+      program: [MSCS, MS CS, on campus MSCS]
+    query_keywords:
+      - GaTech MSCS 就业
+      - 佐治亚理工 CS 申请
+      - GT MSCS 中国人
+      - Georgia Tech 全日制 CS 硕士
+    db_program_id: null
+    status: pending
+    notes: 全日制在校版, 不是 OMSCS (OMSCS 为在职远程不纳入)
+
+  # ═══════════════════════════════════════════════════════════════
+  # 美国 CS 中档 (5 条)
+  # ═══════════════════════════════════════════════════════════════
+  - slug: usc_ms_cs
+    name: USC MS Computer Science
+    priority: A
+    category: cs_us_mid
+    country: 美国
+    aliases:
+      school: [USC, 南加大, Southern California]
+      program: [MSCS, CS37, CS28, CS 计算机]
+    query_keywords:
+      - USC CS 就业
+      - USC CS37 值不值
+      - 南加大 计算机 中国人
+      - USC MSCS 留美
+    db_program_id: 15
+    status: done
+
+  - slug: neu_align_cs
+    name: Northeastern University CS Align
+    priority: A
+    category: cs_us_mid
+    country: 美国
+    aliases:
+      school: [NEU, Northeastern, 东北大学]
+      program: [Align, CS Align, MSCS Align, Align 转码]
+    query_keywords:
+      - NEU Align 就业
+      - NEU Align 中国人
+      - NEU Align 劝退
+      - Northeastern Align 转码
+    db_program_id: null
+    status: pending
+    notes: DB 只有普通 MSCS (#29), Align 是独立项目, 待手工补 DB 行
+
+  - slug: jhu_mse_cs
+    name: Johns Hopkins Whiting MSE in Computer Science
+    priority: B
+    category: cs_us_mid
+    country: 美国
+    aliases:
+      school: [JHU, Johns Hopkins, 约翰霍普金斯, 霍普金斯, Whiting]
+      program: [MSE CS, MS Computer Science, Whiting CS, 计算机硕士]
+    query_keywords:
+      - JHU CS 就业
+      - Johns Hopkins MSE CS 申请
+      - JHU 计算机 中国人
+      - 霍普金斯 CS 性价比
+    db_program_id: null
+    status: pending
+
+  - slug: nyu_tandon_mscs
+    name: NYU Tandon MS in Computer Science
+    priority: A
+    category: cs_us_mid
+    country: 美国
+    aliases:
+      school: [NYU, Tandon, 纽约大学, 纽大, NYU Tandon]
+      program: [Tandon CS, MSCS, Computer Science, Tandon MSCS]
+    query_keywords:
+      - NYU Tandon CS 就业
+      - Tandon MSCS 申请
+      - NYU Tandon 中国人
+      - Tandon CS 性价比
+    db_program_id: 343
+    status: done
+
+  - slug: columbia_ms_cs
+    name: Columbia SEAS MS in Computer Science
+    priority: A
+    category: cs_us_mid
+    country: 美国
+    aliases:
+      school: [Columbia, 哥大, 哥伦比亚]
+      program: [MS CS, Columbia CS, SEAS CS, 计算机硕士]
+    query_keywords:
+      - 哥大 CS 硕士 就业
+      - Columbia MS CS 申请
+      - 哥大 SEAS CS 中国人
+      - Columbia CS 性价比
+    db_program_id: null
+    status: pending
+
+  # ═══════════════════════════════════════════════════════════════
+  # 美国 DS / BA / Info (5 条)
+  # ═══════════════════════════════════════════════════════════════
+  - slug: cmu_mism
+    name: CMU Heinz Master of Information Systems Management
+    priority: A
+    category: ds_ba_us
+    country: 美国
+    aliases:
+      school: [CMU, Carnegie Mellon, 卡梅, Heinz]
+      program: [MISM, BIDA, 信息系统管理, Heinz 信息]
+    query_keywords:
+      - CMU MISM 就业
+      - Heinz MISM 申请
+      - 卡梅 MISM 中国人
+      - CMU MISM BIDA 对比
+    db_program_id: null
+    status: pending
+
+  - slug: columbia_msds
+    name: Columbia University MS in Data Science
+    priority: A
+    category: ds_ba_us
+    country: 美国
+    aliases:
+      school: [Columbia, 哥大, 哥伦比亚]
+      program: [MSDS, MS Data Science, DSI, 数据科学硕士]
+    query_keywords:
+      - 哥大 MSDS 就业
+      - Columbia MSDS 性价比
+      - 哥大 数据科学 中国人
+      - Columbia DSI 回国
+    db_program_id: null
+    status: pending
+
+  - slug: uchicago_mpcs
+    name: University of Chicago MPCS
+    priority: B
+    category: cs_us_mid
+    country: 美国
+    aliases:
+      school: [UChicago, 芝大, 芝加哥大学, University of Chicago]
+      program: [MPCS, Masters Program in CS, 芝大 MPCS]
+    query_keywords:
+      - 芝大 MPCS 转码
+      - UChicago MPCS 就业
+      - MPCS 劝退
+      - 芝大 MPCS 中国人
+    db_program_id: null
+    status: pending
+
+  - slug: nyu_stern_msba
+    name: NYU Stern MS in Business Analytics
+    priority: A
+    category: ds_ba_us
+    country: 美国
+    aliases:
+      school: [NYU Stern, Stern, 纽大 Stern]
+      program: [MSBA, Business Analytics, 商业分析]
+    query_keywords:
+      - Stern MSBA 就业
+      - 纽大 MSBA 申请
+      - NYU Stern 商业分析 中国人
+      - MSBA 一年制 性价比
+    db_program_id: null
+    status: pending
+
+  - slug: duke_mqm_ba
+    name: Duke MQM Business Analytics
+    priority: B
+    category: ds_ba_us
+    country: 美国
+    aliases:
+      school: [Duke, 杜克, Fuqua, 杜克大学]
+      program: [MQM, MQM BA, Business Analytics, 商业分析硕士]
+    query_keywords:
+      - Duke MQM 就业
+      - 杜克 MQM 性价比
+      - Duke MQM BA 回国
+      - Fuqua MQM 中国人
+    db_program_id: null
+    status: pending
+
+  # ═══════════════════════════════════════════════════════════════
+  # 美国金融 (3 条)
+  # ═══════════════════════════════════════════════════════════════
+  - slug: mit_mfin
+    name: MIT Sloan Master of Finance
+    priority: A
+    category: fin_us
+    country: 美国
+    aliases:
+      school: [MIT, 麻省理工, Sloan, MIT Sloan]
+      program: [MFin, Master of Finance, 金融硕士]
+    query_keywords:
+      - MIT MFin 就业
+      - Sloan MFin 性价比
+      - MIT 金融硕士 回国
+      - MFin 中国人
+    db_program_id: null
+    status: pending
+
+  - slug: cmu_mscf
+    name: CMU Tepper Master of Science in Computational Finance
+    priority: A
+    category: fin_us
+    country: 美国
+    aliases:
+      school: [CMU, Carnegie Mellon, 卡梅, Tepper]
+      program: [MSCF, Computational Finance, 金工, 金融工程]
+    query_keywords:
+      - CMU MSCF 就业
+      - 卡梅 MSCF 申请
+      - MSCF 金工 中国人
+      - CMU Tepper MSCF 性价比
+    db_program_id: 350
+    status: done
+    notes: DB 有 (#350), 还没跑 POC
+
+  - slug: columbia_msfe
+    name: Columbia MS in Financial Engineering
+    priority: A
+    category: fin_us
+    country: 美国
+    aliases:
+      school: [Columbia, 哥大, 哥伦比亚]
+      program: [MSFE, Financial Engineering, 金工, 金融工程硕士]
+    query_keywords:
+      - 哥大 MSFE 就业
+      - Columbia 金工 申请
+      - MSFE 中国人
+      - 哥大 MSFE 回国
+    db_program_id: null
+    status: pending
+
+  # ═══════════════════════════════════════════════════════════════
+  # 英国 (5 条)
+  # ═══════════════════════════════════════════════════════════════
+  - slug: imperial_msf
+    name: Imperial College London MSc Finance
+    priority: A
+    category: fin_uk
+    country: 英国
+    aliases:
+      school: [Imperial, 帝国理工, IC]
+      program: [MSc Finance, MSF, 金融硕士]
+    query_keywords:
+      - Imperial MSF 就业
+      - 帝国理工 MSF 回国
+      - IC MSF 性价比
+      - 帝国理工 金融硕士 一年制
+    db_program_id: 49
+    status: done
+
+  - slug: lse_msc_finance
+    name: LSE MSc Finance
+    priority: A
+    category: fin_uk
+    country: 英国
+    aliases:
+      school: [LSE, 伦敦政经, London School of Economics]
+      program: [MSc Finance, Finance, 金融硕士]
+    query_keywords:
+      - LSE Finance 就业
+      - 伦敦政经 金融 申请
+      - LSE MSc Finance 回国
+      - LSE 金融 中国人
+    db_program_id: null
+    status: pending
+
+  - slug: imperial_mscs
+    name: Imperial College London MSc Computing (AI/ML)
+    priority: A
+    category: cs_uk
+    country: 英国
+    aliases:
+      school: [Imperial, 帝国理工, IC]
+      program: [MSc Computing, MSc CS, AI, Machine Learning, 计算机硕士]
+    query_keywords:
+      - Imperial MSc Computing 就业
+      - 帝国理工 CS 申请
+      - IC MSc AI ML 中国人
+      - 帝国理工 计算机 回国
+    db_program_id: 45
+    status: done
+    notes: DB 有 (#45), 还没跑 POC
+
+  - slug: ucl_ms_cs
+    name: UCL MSc Computer Science
+    priority: B
+    category: cs_uk
+    country: 英国
+    aliases:
+      school: [UCL, University College London, 伦敦大学学院]
+      program: [MSc Computer Science, MSc CS, 计算机硕士]
+    query_keywords:
+      - UCL CS 就业
+      - UCL MSc CS 申请
+      - UCL 计算机 中国人
+      - UCL CS 回国
+    db_program_id: 51
+    status: done
+    notes: DB 有 (#51), 还没跑 POC
+
+  - slug: oxford_mphil_cs
+    name: Oxford MPhil / MSc Advanced Computer Science
+    priority: B
+    category: cs_uk
+    country: 英国
+    aliases:
+      school: [Oxford, 牛津]
+      program: [MPhil CS, MSc Advanced Computer Science, 计算机硕士]
+    query_keywords:
+      - 牛津 CS 硕士 就业
+      - Oxford MSc CS 申请
+      - Oxford 计算机 中国人
+      - 牛津 MPhil CS 难度
+    db_program_id: null
+    status: pending
+
+  # ═══════════════════════════════════════════════════════════════
+  # 亚洲 (4 条)
+  # ═══════════════════════════════════════════════════════════════
+  - slug: hkust_bdt
+    name: HKUST MSc Big Data Technology
+    priority: A
+    category: cs_asia
+    country: 香港
+    aliases:
+      school: [HKUST, 港科大, 科大, Hong Kong University of Science]
+      program: [BDT, Big Data Technology, 大数据技术, 大数据]
+    query_keywords:
+      - 港科大 BDT 就业
+      - HKUST Big Data 申请
+      - 港科大 大数据 中国人
+      - HKUST BDT 转码
+    db_program_id: null
+    status: pending
+
+  - slug: cuhk_ms_cs
+    name: CUHK MSc in Computer Science
+    priority: B
+    category: cs_asia
+    country: 香港
+    aliases:
+      school: [CUHK, 港中文, 中大, 香港中文大学]
+      program: [MSc CS, Computer Science, 计算机硕士]
+    query_keywords:
+      - 港中文 CS 就业
+      - CUHK MSc CS 申请
+      - 港中文 计算机 中国人
+      - 中大 CS 硕士 性价比
+    db_program_id: null
+    status: pending
+
+  - slug: nus_ms_cs
+    name: NUS MSc in Computer Science
+    priority: A
+    category: cs_asia
+    country: 新加坡
+    aliases:
+      school: [NUS, 新加坡国立, 国大]
+      program: [MSc CS, MComp, Computer Science, 计算机硕士]
+    query_keywords:
+      - NUS CS 就业
+      - 新加坡国立 CS 申请
+      - NUS MComp 中国人
+      - 国大 计算机 留新
+    db_program_id: null
+    status: pending
+
+  - slug: ntu_ai
+    name: NTU Singapore MSc in AI
+    priority: B
+    category: cs_asia
+    country: 新加坡
+    aliases:
+      school: [NTU, Nanyang, 南洋理工, 南大]
+      program: [MSc AI, Artificial Intelligence, 人工智能硕士]
+    query_keywords:
+      - NTU AI 硕士 就业
+      - 南洋理工 AI 申请
+      - NTU MSc AI 中国人
+      - NTU AI 回国
+    db_program_id: null
+    status: pending
+
+  # ═══════════════════════════════════════════════════════════════
+  # Marketing 轨道 — 首批 16 (8 US + 8 非美)
+  # profile 建议: marketing_track
+  # 评价 aspect 侧重: brand_china / practical_exposure / network_outcome
+  # ═══════════════════════════════════════════════════════════════
+
+  # ── 美国 Marketing / Communication (4) ──
+  - slug: northwestern_imc
+    name: Northwestern Medill Integrated Marketing Communications
+    priority: A
+    category: comm_us
+    country: 美国
+    aliases:
+      school: [Northwestern, 西北大学, 西北, Medill]
+      program: [IMC, Integrated Marketing, 整合营销, Medill IMC]
+    seed_queries:
+      - Northwestern IMC 就业
+      - 西北大学 IMC 申请
+      - Medill IMC 中国人
+      - IMC 回国 营销
+    db_program_id: null
+    status: pending
+    notes: 中国申请者 mkt 旗舰项目, 讨论度爆炸
+
+  - slug: usc_annenberg_cm
+    name: USC Annenberg MS Communication Management
+    priority: A
+    category: comm_us
+    country: 美国
+    aliases:
+      school: [USC, 南加大, Annenberg, Southern California]
+      program: [MCM, Communication Management, 传播管理, Strategic Public Relations]
+    seed_queries:
+      - USC Annenberg MCM 就业
+      - 南加大 传播 申请
+      - USC MCM 中国人
+      - Annenberg 回国 传播
+    db_program_id: null
+    status: pending
+
+  - slug: nyu_sps_imc
+    name: NYU SPS MS Integrated Marketing
+    priority: B
+    category: comm_us
+    country: 美国
+    aliases:
+      school: [NYU, 纽大, 纽约大学, SPS]
+      program: [IMC, Integrated Marketing, NYU SPS 营销]
+    seed_queries:
+      - NYU SPS IMC 就业
+      - 纽大 SPS 整合营销 申请
+      - NYU IMC 中国人
+      - NYU SPS 营销 回国
+    db_program_id: null
+    status: pending
+
+  - slug: columbia_strategic_comm
+    name: Columbia SPS MS Strategic Communication
+    priority: B
+    category: comm_us
+    country: 美国
+    aliases:
+      school: [Columbia, 哥大, SPS]
+      program: [Strategic Communication, 战略传播, 公共关系]
+    seed_queries:
+      - 哥大 SPS 传播 就业
+      - Columbia Strategic Communication 申请
+      - 哥大 传播硕士 中国人
+      - Columbia SPS 回国
+    db_program_id: null
+    status: pending
+
+  # ── 美国 Marketing Analytics (3) ──
+  - slug: emory_ma
+    name: Emory Goizueta MS Marketing Analytics
+    priority: A
+    category: mktanalytics_us
+    country: 美国
+    aliases:
+      school: [Emory, 埃默里, Goizueta]
+      program: [MS Marketing Analytics, MSMA, 营销分析]
+    seed_queries:
+      - Emory MSMA 就业
+      - 埃默里 营销分析 申请
+      - Goizueta 营销 中国人
+      - Emory MS Marketing Analytics 回国
+    db_program_id: null
+    status: pending
+    notes: mkt 转 data 代表, 和 Northwestern IMC 对比常见
+
+  - slug: washu_msca
+    name: WashU Olin MS Customer Analytics
+    priority: A
+    category: mktanalytics_us
+    country: 美国
+    aliases:
+      school: [WashU, 圣路易斯华盛顿, Olin, 华盛顿圣路易斯]
+      program: [MSCA, Customer Analytics, 客户分析]
+    seed_queries:
+      - WashU MSCA 就业
+      - Olin MSCA 申请
+      - 华盛顿圣路易斯 MSCA 中国人
+      - WashU Customer Analytics 回国
+    db_program_id: null
+    status: pending
+
+  - slug: rochester_simon_msma
+    name: Rochester Simon MS Marketing Analytics
+    priority: B
+    category: mktanalytics_us
+    country: 美国
+    aliases:
+      school: [Rochester, 罗切斯特, Simon]
+      program: [MS Marketing Analytics, MSMA, 营销分析]
+    seed_queries:
+      - Rochester Simon MSMA 就业
+      - 罗切斯特 营销分析 申请
+      - Simon MSMA 中国人
+      - Rochester Simon 性价比
+    db_program_id: null
+    status: pending
+
+  # ── 美国 Marketing (传统) (1) ──
+  - slug: ut_mccombs_msma
+    name: UT Austin McCombs MS Marketing
+    priority: B
+    category: mkt_us
+    country: 美国
+    aliases:
+      school: [UT Austin, 德州大学奥斯汀, McCombs, 德州奥斯汀]
+      program: [MS Marketing, 营销硕士, MSMkt]
+    seed_queries:
+      - McCombs MS Marketing 就业
+      - 德州奥斯汀 营销 申请
+      - UT Austin Marketing 中国人
+      - McCombs MS 营销 回国
+    db_program_id: null
+    status: pending
+
+  # ── UK Marketing (3) ──
+  - slug: imperial_strategic_mkt
+    name: Imperial College London MSc Strategic Marketing
+    priority: A
+    category: mkt_uk
+    country: 英国
+    aliases:
+      school: [Imperial, 帝国理工, IC]
+      program: [MSc Strategic Marketing, Strategic Marketing, 战略营销]
+    seed_queries:
+      - Imperial Strategic Marketing 就业
+      - 帝国理工 营销 申请
+      - IC MSc Strategic Marketing 中国人
+      - 帝国理工 营销 回国
+    db_program_id: null
+    status: pending
+
+  - slug: warwick_msc_mkt
+    name: Warwick WBS MSc Marketing and Strategy
+    priority: A
+    category: mkt_uk
+    country: 英国
+    aliases:
+      school: [Warwick, 华威, WBS, 华威商学院]
+      program: [MSc Marketing and Strategy, Marketing & Strategy, 营销战略]
+    seed_queries:
+      - Warwick WBS Marketing Strategy 就业
+      - 华威 营销战略 申请
+      - WBS Marketing 中国人
+      - 华威 营销 回国
+    db_program_id: null
+    status: pending
+
+  - slug: manchester_msc_mkt
+    name: Manchester MBS MSc Marketing
+    priority: A
+    category: mkt_uk
+    country: 英国
+    aliases:
+      school: [Manchester, 曼彻斯特大学, 曼大, MBS, Alliance Manchester]
+      program: [MSc Marketing, 营销硕士]
+    seed_queries:
+      - 曼大 MSc Marketing 就业
+      - Manchester 营销 申请
+      - 曼大 营销硕士 中国人
+      - MBS Marketing 回国
+    db_program_id: null
+    status: pending
+    notes: 大陆申请量最大的 UK mkt 之一
+
+  # ── 欧陆 Marketing (2) ──
+  - slug: hec_paris_msc_mkt
+    name: HEC Paris MSc Marketing
+    priority: A
+    category: mkt_eu
+    country: 法国
+    aliases:
+      school: [HEC, HEC Paris, 巴黎高商]
+      program: [MSc Marketing, MSc Strategic Management Marketing, 营销硕士]
+    seed_queries:
+      - HEC Paris Marketing 就业
+      - 巴黎高商 营销 申请
+      - HEC 营销 中国人
+      - HEC Paris 回国
+    db_program_id: null
+    status: pending
+
+  - slug: bocconi_msc_mkt
+    name: Bocconi MSc Marketing Management
+    priority: A
+    category: mkt_eu
+    country: 意大利
+    aliases:
+      school: [Bocconi, 博科尼]
+      program: [MSc Marketing Management, Marketing Management, 营销管理]
+    seed_queries:
+      - Bocconi Marketing Management 就业
+      - 博科尼 营销 申请
+      - Bocconi 营销 中国人
+      - 博科尼 回国 性价比
+    db_program_id: null
+    status: pending
+    notes: 欧洲 ROI 代表, 学费比英法低
+
+  # ── 亚洲 Marketing (3) ──
+  - slug: hkust_mkt_mgmt
+    name: HKUST MSc Marketing Management
+    priority: A
+    category: mkt_asia
+    country: 香港
+    aliases:
+      school: [HKUST, 港科大, 科大]
+      program: [MSc Marketing Management, Marketing Management, 营销管理]
+    seed_queries:
+      - 港科大 Marketing 就业
+      - HKUST Marketing Management 申请
+      - 港科大 营销 中国人
+      - HKUST Marketing 回国
+    db_program_id: null
+    status: pending
+
+  - slug: cuhk_msc_mkt
+    name: CUHK MSc Marketing
+    priority: A
+    category: mkt_asia
+    country: 香港
+    aliases:
+      school: [CUHK, 港中文, 中大, 香港中文大学]
+      program: [MSc Marketing, 营销硕士]
+    seed_queries:
+      - 港中文 Marketing 就业
+      - CUHK MSc Marketing 申请
+      - 中大 营销 中国人
+      - CUHK Marketing 回国
+    db_program_id: null
+    status: pending
+
+  - slug: nus_msc_mkt_analytics
+    name: NUS MSc Marketing Analytics and Insights
+    priority: A
+    category: mkt_asia
+    country: 新加坡
+    aliases:
+      school: [NUS, 新加坡国立, 国大]
+      program: [MSc Marketing Analytics, Marketing Analytics, 营销分析]
+    seed_queries:
+      - NUS Marketing Analytics 就业
+      - 新加坡国立 营销分析 申请
+      - 国大 Marketing 中国人
+      - NUS MMA 回国
+    db_program_id: null
+    status: pending
+
+  # ═══════════════════════════════════════════════════════════════
+  # 高热度第三批: US/UK 跨方向, 补人文/政策/法律短板 (10 条, 2026-04-15)
+  # ═══════════════════════════════════════════════════════════════
+  - slug: harvard_msds
+    name: Harvard MS in Data Science
+    priority: A
+    category: ds_us_top
+    country: 美国
+    aliases:
+      school: [Harvard, 哈佛]
+      program: [MS Data Science, MSDS, 数据科学]
+    seed_queries:
+      - Harvard MSDS 就业
+      - 哈佛 数据科学 硕士 申请
+      - Harvard MSDS 中国人
+      - 哈佛 数据科学 难度
+    db_program_id: 2
+    status: pending
+
+  - slug: jhu_msds
+    name: Johns Hopkins MS in Data Science
+    priority: A
+    category: ds_us_top
+    country: 美国
+    aliases:
+      school: [JHU, Johns Hopkins, 约翰霍普金斯]
+      program: [MSDS, MS Data Science, 数据科学]
+    seed_queries:
+      - JHU 数据科学 就业
+      - Johns Hopkins MSDS 申请
+      - JHU MSDS 中国人
+      - 约翰霍普金斯 数据科学 回国
+    db_program_id: 10
+    status: pending
+
+  - slug: imperial_msba
+    name: Imperial MSc Business Analytics
+    priority: A
+    category: ba_uk
+    country: 英国
+    aliases:
+      school: [Imperial, 帝国理工, IC]
+      program: [MSBA, Business Analytics, 商业分析]
+    seed_queries:
+      - Imperial MSBA 就业
+      - 帝国理工 商业分析 申请
+      - Imperial Business Analytics 中国人
+      - Imperial 商分 回国
+    db_program_id: 53
+    status: pending
+
+  - slug: cornell_mfe
+    name: Cornell MEng Financial Engineering
+    priority: A
+    category: fin_us
+    country: 美国
+    aliases:
+      school: [Cornell, 康奈尔]
+      program: [MFE, Financial Engineering, 金融工程, ORIE]
+    seed_queries:
+      - Cornell MFE 就业
+      - 康奈尔 金融工程 申请
+      - Cornell MFE 中国人
+      - Cornell ORIE quant 出路
+    db_program_id: 352
+    status: pending
+
+  - slug: nyu_courant_msmf
+    name: NYU Courant MS in Mathematics in Finance
+    priority: A
+    category: fin_us
+    country: 美国
+    aliases:
+      school: [NYU, Courant, 纽约大学]
+      program: [MSMF, Mathematics in Finance, 金融数学, MFE]
+    seed_queries:
+      - NYU Courant MSMF 就业
+      - 纽约大学 金融数学 申请
+      - NYU MSMF 中国人
+      - Courant MSMF quant
+    db_program_id: 353
+    status: pending
+
+  - slug: cmu_mhci
+    name: CMU Master of Human-Computer Interaction
+    priority: A
+    category: hci_us
+    country: 美国
+    aliases:
+      school: [CMU, 卡梅, 卡内基梅隆]
+      program: [MHCI, HCI, 人机交互, Master of HCI]
+    seed_queries:
+      - CMU MHCI 就业
+      - 卡梅 HCI 硕士 申请
+      - CMU MHCI 中国人
+      - CMU HCI 转码 设计
+    db_program_id: 371
+    status: pending
+
+  - slug: columbia_tc_tesol
+    name: Columbia Teachers College MA TESOL
+    priority: A
+    category: ed_us
+    country: 美国
+    aliases:
+      school: [Columbia, Teachers College, TC, 哥大教育学院]
+      program: [TESOL, MA TESOL, 对外英语教学]
+    seed_queries:
+      - Columbia TC TESOL 就业
+      - 哥大 TESOL 申请
+      - Columbia TESOL 中国人
+      - TC TESOL 回国 教书
+    db_program_id: 212
+    status: pending
+
+  - slug: nyu_itp
+    name: NYU Tisch ITP Interactive Telecommunications
+    priority: A
+    category: media_us
+    country: 美国
+    aliases:
+      school: [NYU, Tisch, 纽约大学]
+      program: [ITP, Interactive Telecommunications, 交互媒体]
+    seed_queries:
+      - NYU ITP 就业
+      - ITP 申请 难度
+      - NYU ITP 中国人
+      - ITP 作品集 转专业
+    db_program_id: 184
+    status: pending
+
+  - slug: harvard_llm
+    name: Harvard Law School LLM
+    priority: A
+    category: law_us
+    country: 美国
+    aliases:
+      school: [Harvard, 哈佛, HLS, Harvard Law]
+      program: [LLM, Master of Laws, 法学硕士]
+    seed_queries:
+      - Harvard LLM 就业
+      - 哈佛 LLM 申请
+      - HLS LLM 中国人
+      - 哈佛 法学硕士 回国 律所
+    db_program_id: 273
+    status: pending
+
+  - slug: hks_mpp
+    name: Harvard Kennedy School Master in Public Policy
+    priority: A
+    category: policy_us
+    country: 美国
+    aliases:
+      school: [Harvard, Kennedy, HKS, 哈佛肯尼迪学院]
+      program: [MPP, Master in Public Policy, 公共政策]
+    seed_queries:
+      - HKS MPP 就业
+      - 哈佛肯尼迪 公共政策 申请
+      - HKS MPP 中国人
+      - 哈佛 MPP 回国 体制
+    db_program_id: 544
+    status: pending

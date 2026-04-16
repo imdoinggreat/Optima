@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
+import os
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -19,14 +20,20 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 # 新增：配置 CORS 中间件
+_cors_origins = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+]
+_extra = os.getenv("CORS_ORIGINS", "")
+if _extra:
+    _cors_origins.extend(o.strip() for o in _extra.split(",") if o.strip())
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",  # 允许你的 Next.js 前端地址
-    ],
+    allow_origins=_cors_origins,
     allow_credentials=True,
-    allow_methods=["*"],  # 允许所有 HTTP 方法（GET, POST 等）
-    allow_headers=["*"],  # 允许所有请求头
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # API routers

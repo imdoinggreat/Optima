@@ -5,10 +5,10 @@ import { GraduationCap, Target, BookOpen, TrendingUp, Users } from "lucide-react
 import { useHealth } from "@/hooks/use-health"
 
 const features = [
-  { icon: Target,     title: "SMART MATCH",     desc: "AI驱动的硕士项目精准匹配引擎", color: "#FF00FF" },
-  { icon: BookOpen,   title: "PREREQ SCAN",     desc: "先修课匹配度量化分析系统",       color: "#00FFFF" },
-  { icon: TrendingUp, title: "CAREER PATH",     desc: "就业去向与职业路径可视化",       color: "#FF9900" },
-  { icon: Users,      title: "TRACK & MANAGE",  desc: "申请全流程一站式追踪管理",       color: "#FF00FF" },
+  { icon: Target,     title: "MULTI-SIGNAL",    desc: "多信号推断引擎，构建决策画像与原型匹配", color: "#FF00FF" },
+  { icon: BookOpen,   title: "CONFLICT DETECT", desc: "认知冲突检测，发现偏好中的矛盾信号",       color: "#00FFFF" },
+  { icon: TrendingUp, title: "593 PROGRAMS",    desc: "项目级精准匹配，每条推荐附带why与risk",       color: "#FF9900" },
+  { icon: Users,      title: "13 COUNTRIES",    desc: "全学科覆盖CS/人文/艺术/商科/社科等",       color: "#FF00FF" },
 ]
 
 function VwCard({ feature }: { feature: typeof features[number] }) {
@@ -53,7 +53,7 @@ export default function LandingVaporwave() {
             <span style={{ fontFamily: "var(--font-orbitron, sans-serif)", fontWeight: 900, fontSize: 16, color: "#E0E0E0", letterSpacing: "0.12em", textTransform: "uppercase" }}>OPTIMA</span>
             <span style={{ fontFamily: "var(--font-share-tech, monospace)", fontSize: 10, color: "#FF00FF", letterSpacing: "0.1em" }}>v1.0</span>
           </div>
-          <Link href="/onboarding"
+          <Link href="/assessment"
             style={{ display: "inline-flex", alignItems: "center", gap: 6, border: "1px solid #00FFFF", padding: "8px 18px", color: "#00FFFF", fontFamily: "var(--font-share-tech, monospace)", fontSize: 13, textDecoration: "none", letterSpacing: "0.1em", textTransform: "uppercase", transform: "skewX(-12deg)", transition: "all 0.15s" }}
             onMouseEnter={(e) => { const el = e.currentTarget; el.style.background = "#00FFFF"; el.style.color = "#000"; el.style.transform = "skewX(0deg)"; el.style.boxShadow = "0 0 20px #00FFFF" }}
             onMouseLeave={(e) => { const el = e.currentTarget; el.style.background = "transparent"; el.style.color = "#00FFFF"; el.style.transform = "skewX(-12deg)"; el.style.boxShadow = "none" }}
@@ -72,13 +72,13 @@ export default function LandingVaporwave() {
           <h1 style={{ fontFamily: "var(--font-orbitron, sans-serif)", fontWeight: 900, color: "#E0E0E0", lineHeight: 1.05, margin: "0 0 8px" }}>
             <div style={{ fontSize: "clamp(1.4rem, 5vw, 3rem)", letterSpacing: "0.08em", textTransform: "uppercase" }}>MASTER&apos;S SELECTION</div>
             <div style={{ fontSize: "clamp(2rem, 8vw, 5.5rem)", background: "linear-gradient(to right, #FF9900, #FF00FF, #00FFFF)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", letterSpacing: "-0.02em", filter: "drop-shadow(0 0 20px rgba(255,0,255,0.4))" }}>
-              文商科 AI
+              AI OPTIMA
             </div>
             <div style={{ fontSize: "clamp(1rem, 3vw, 1.8rem)", letterSpacing: "0.12em", color: "#00FFFF", textShadow: "0 0 12px #00FFFF", textTransform: "uppercase" }}>Intelligence Engine</div>
           </h1>
 
           <p style={{ fontFamily: "var(--font-share-tech, monospace)", fontSize: 15, color: "rgba(224,224,224,0.65)", margin: "24px auto 32px", maxWidth: 560, lineHeight: 1.65 }}>
-            &gt; 专为文商科背景设计的AI选校系统，基于真实数据匹配最适合您的硕士项目
+            &gt; 覆盖全学科的AI选校系统，基于真实数据匹配最适合您的硕士项目
           </p>
 
           {/* Status */}
@@ -93,7 +93,7 @@ export default function LandingVaporwave() {
 
           {/* CTAs */}
           <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
-            <Link href="/onboarding"
+            <Link href="/assessment"
               style={{ display: "inline-flex", alignItems: "center", gap: 8, border: "2px solid #FF00FF", background: "#FF00FF", padding: "14px 28px", color: "#fff", fontFamily: "var(--font-share-tech, monospace)", fontSize: 14, textDecoration: "none", letterSpacing: "0.12em", textTransform: "uppercase", boxShadow: "0 0 20px rgba(255,0,255,0.5)", transform: "skewX(-12deg)", transition: "all 0.15s" }}
               onMouseEnter={(e) => { e.currentTarget.style.transform = "skewX(0deg) scale(1.04)"; e.currentTarget.style.boxShadow = "0 0 40px #FF00FF" }}
               onMouseLeave={(e) => { e.currentTarget.style.transform = "skewX(-12deg)"; e.currentTarget.style.boxShadow = "0 0 20px rgba(255,0,255,0.5)" }}
@@ -102,13 +102,13 @@ export default function LandingVaporwave() {
                 <GraduationCap style={{ width: 16, height: 16 }} /> 开始测评
               </span>
             </Link>
-            <Link href="/dashboard"
+            <Link href="/assessment"
               style={{ display: "inline-flex", alignItems: "center", gap: 8, border: "1px solid #00FFFF", background: "transparent", padding: "14px 28px", color: "#00FFFF", fontFamily: "var(--font-share-tech, monospace)", fontSize: 14, textDecoration: "none", letterSpacing: "0.1em", textTransform: "uppercase", transform: "skewX(-12deg)", transition: "all 0.15s" }}
               onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(0,255,255,0.1)"; e.currentTarget.style.transform = "skewX(0deg)"; e.currentTarget.style.boxShadow = "0 0 15px rgba(0,255,255,0.3)" }}
               onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.transform = "skewX(-12deg)"; e.currentTarget.style.boxShadow = "none" }}
             >
               <span style={{ transform: "skewX(12deg)", display: "flex", alignItems: "center", gap: 8 } as React.CSSProperties}>
-                <Target style={{ width: 16, height: 16 }} /> 查看匹配
+                <Target style={{ width: 16, height: 16 }} /> 了解测评
               </span>
             </Link>
           </div>
@@ -140,7 +140,7 @@ export default function LandingVaporwave() {
           </div>
           <div style={{ padding: "20px 24px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 16 }}>
             {[
-              { label: "PROGRAMS_INDEXED", value: "500+", color: "#FF00FF" },
+              { label: "PROGRAMS_INDEXED", value: "593", color: "#FF00FF" },
               { label: "MATCH_ACCURACY",   value: "94%",  color: "#00FFFF" },
               { label: "SUCCESS_RATE",      value: "87%",  color: "#FF9900" },
               { label: "SYSTEM_STATUS",    value: connected ? "ONLINE" : "OFFLINE", color: connected ? "#00FF00" : "#FF0000" },
@@ -161,9 +161,9 @@ export default function LandingVaporwave() {
             准备<span style={{ color: "#FF00FF", textShadow: "0 0 12px #FF00FF" }}>进入</span>选校系统？
           </h2>
           <p style={{ fontFamily: "var(--font-share-tech, monospace)", fontSize: 14, color: "rgba(224,224,224,0.6)", margin: "0 0 28px", lineHeight: 1.65 }}>
-            &gt; 创建您的硕士申请档案，获得专属 AI 推荐_
+            &gt; 完成~45题测评，获得专属 AI 选校推荐_
           </p>
-          <Link href="/onboarding"
+          <Link href="/assessment"
             style={{ display: "inline-flex", alignItems: "center", gap: 8, border: "2px solid #FF00FF", background: "#FF00FF", padding: "14px 32px", color: "#fff", fontFamily: "var(--font-share-tech, monospace)", fontSize: 14, textDecoration: "none", letterSpacing: "0.12em", textTransform: "uppercase", boxShadow: "0 0 20px rgba(255,0,255,0.4)", transform: "skewX(-8deg)", transition: "all 0.15s" }}
             onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 0 40px #FF00FF, 0 0 80px rgba(255,0,255,0.3)"; e.currentTarget.style.transform = "skewX(0deg)" }}
             onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "0 0 20px rgba(255,0,255,0.4)"; e.currentTarget.style.transform = "skewX(-8deg)" }}
@@ -178,7 +178,7 @@ export default function LandingVaporwave() {
       {/* Footer */}
       <footer style={{ position: "relative", zIndex: 10, borderTop: "1px solid rgba(255,0,255,0.2)", padding: "24px", textAlign: "center" }}>
         <p style={{ fontFamily: "var(--font-share-tech, monospace)", fontSize: 11, color: "rgba(224,224,224,0.35)", margin: 0, letterSpacing: "0.1em", textTransform: "uppercase" }}>
-          © 2026 OPTIMA · 文商科硕士智能选校平台 · DATA: IPEDS/NCES
+          © 2026 OPTIMA · 全球硕士智能选校平台 · 覆盖全球 13 国 593 个项目
         </p>
       </footer>
     </div>

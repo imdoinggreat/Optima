@@ -55,3 +55,37 @@ venv/
 .cursor/
 .idea/
 .vscode/
+crawler/.cache/
+backend/crawler/.cache/
+
+# data/research files (local only)
+*.xlsx
+*.docx
+.douban_cache/
+
+# session docs (local only)
+SESSION_HANDOFF.md
+progress.md
+findings.md
+task_plan.md
+
+# POC output + gap reports (reproducible data, not code)
+backend/crawler/community_enrichment/poc_output/
+backend/crawler/community_enrichment/pending_gaps/
+
+# root-level research scripts
+data_freshness.py
+douban_xuanxiao_scraper.py
+generate_masters_tracker.py
+scrape_*.py
+requirements_scraper.txt
+供参考/
+研究方法.txt
+新题库设计.md
+留学社区选校分析框架.*
+选校分析.*
+变量包.csv
+题库-*.csv
+
+# one-off seed scripts
+backend/seed_*.py

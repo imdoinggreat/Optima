@@ -5,7 +5,7 @@ import { ThemedShell } from "@/components/themed-shell"
 
 export default function AssessmentPage() {
   return (
-    <ThemedShell title="硕士专属测评" backHref="/">
+    <ThemedShell title="选校决策测评" backHref="/">
       <main className="min-h-screen bg-background px-4 py-8 md:px-8">
         <MasterAssessmentForm />
       </main>
